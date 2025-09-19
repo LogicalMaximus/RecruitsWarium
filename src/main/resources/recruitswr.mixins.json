@@ -1,0 +1,38 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.logic.recruitswr.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "recruitswr.refmap.json",
+  "mixins": [
+    "MixinAbstractRecruitEntity",
+    "MixinBowmanEntity",
+    "MixinRecruitEvents",
+    "bullets.extra_large.MixinExtraLargeBulletItem",
+    "bullets.flame.MixinPetroliumItem",
+    "bullets.large.MixinAPLargeBulletItem",
+    "bullets.large.MixinLargeBulletItem",
+    "bullets.large.MixinStealthLargeBulletItem",
+    "bullets.medium.MixinBulletItem",
+    "bullets.medium.MixinMediumAPBulletItem",
+    "bullets.medium.MixinMediumStealthBulletItem",
+    "bullets.rocket.MixinArmorPeelerRocketItem",
+    "bullets.shell.MixinBirdShotItem",
+    "bullets.shell.MixinShotgunShellItem",
+    "bullets.shell.MixinSlugShellItem",
+    "bullets.small.MixinSmallbulletItem",
+    "bullets.small.MixinSmallHollowPointBulletItem",
+    "bullets.small.MixinSmallStealthBulletItem",
+    "bullets.very_large.MixinSmallShellItem"
+  ],
+  "client": [
+    "client.MixinRecruitVillagerModel",
+    "client.MixinRecruitVillagerRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
