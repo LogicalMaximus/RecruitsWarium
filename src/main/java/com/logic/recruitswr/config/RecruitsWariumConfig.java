@@ -128,8 +128,10 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Float> AIM_INACCURACY;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_TARGET_MONSTERS;
+
     static {
-        BUILDER.push("Recruit Warium Turret Config");
+        BUILDER.push("Recruit Warium Server Config");
 
         ADDITIONAL_SHOOT_DELAY = BUILDER.comment("\nAn Additional Delay Added To The Weapon Cooldown To Create The Max Weapon Cooldown \n\t(takes effect after restart)").define("AdditionalShootDelay", 3);
 
@@ -214,6 +216,8 @@ public class RecruitsWariumConfig {
         MAX_FLAME_THROWER_RELOAD = BUILDER.comment("\nThe Reload Time For The Flame Thrower With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxFlameThrowerReload", 120);
 
         AIM_INACCURACY = BUILDER.comment("\nInaccuracy Added To The Recruits Aim So They Don't Have Aimbot \n\t(takes effect after restart)").define("AimInaccuracy", 0.8F);
+
+        SHOULD_TARGET_MONSTERS = BUILDER.comment("\nWhether Recruits Should Target Monsters By Default, This includes Warium AI Robots \n\t(takes effect after restart)").define("ShouldRecruitsTargetMonsters", true);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

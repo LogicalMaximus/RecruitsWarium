@@ -3,6 +3,7 @@ package com.logic.recruitswr.mixin;
 import com.logic.recruitswr.bridge.IPose;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
+import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAimerGoal;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAttackGoal;
 import com.logic.recruitswr.entity.ai.RecruitWariumStrategicFire;
@@ -15,6 +16,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -42,6 +45,10 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
     private void registerGoals(CallbackInfo ci) {
         this.goalSelector.addGoal(2, new RecruitRangedWariumAttackGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  3.0));
         this.goalSelector.addGoal(2, new RecruitRangedWariumAimerGoal<>(((AbstractRecruitEntity) (Object)this)));
+
+        if(RecruitsWariumConfig.SHOULD_TARGET_MONSTERS.get()) {
+            this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Monster.class, false));
+        }
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("HEAD"))
