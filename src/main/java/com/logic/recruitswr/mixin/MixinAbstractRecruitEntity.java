@@ -7,6 +7,7 @@ import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAimerGoal;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAttackGoal;
 import com.logic.recruitswr.entity.ai.RecruitWariumStrategicFire;
+import com.logic.recruitswr.entity.ai.WRNearestAttackableTargetGoal;
 import com.logic.recruitswr.entity.poses.RecruitPose;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.Main;
@@ -47,7 +48,7 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         this.goalSelector.addGoal(2, new RecruitRangedWariumAimerGoal<>(((AbstractRecruitEntity) (Object)this)));
 
         if(RecruitsWariumConfig.SHOULD_TARGET_MONSTERS.get()) {
-            this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Monster.class, false));
+            this.targetSelector.addGoal(2, new WRNearestAttackableTargetGoal<>(this, Monster.class, false));
         }
     }
 

@@ -7,13 +7,7 @@
   "mixins": [
     "MixinAbstractRecruitEntity",
     "MixinBowmanEntity",
-    "MixinCaptianEntity",
-    "MixinCrossbowmanEntity",
-    "MixinHorsemanEntity",
-    "MixinPatrolLeaderEntity",
-    "MixinRecruitEntity",
     "MixinRecruitEvents",
-    "MixinRecruitShieldmanEntity",
     "bullets.extra_large.MixinExtraLargeBulletItem",
     "bullets.flame.MixinPetroliumItem",
     "bullets.large.MixinAPLargeBulletItem",
