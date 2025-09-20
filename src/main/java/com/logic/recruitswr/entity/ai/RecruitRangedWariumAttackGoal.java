@@ -1,39 +1,23 @@
 package com.logic.recruitswr.entity.ai;
 
-import com.logic.recruitswr.bridge.IAmmo;
 import com.logic.recruitswr.bridge.IPose;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
-import com.logic.recruitswr.compat.weapons.medium.BurstRifleWeapon;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.entity.poses.RecruitPose;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.config.RecruitsServerConfig;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
-import net.mcreator.crustychunks.init.CrustyChunksModSounds;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
 
 public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> extends Goal {
     private final T recruit;

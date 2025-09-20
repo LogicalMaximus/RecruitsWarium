@@ -5,6 +5,7 @@ import com.talhanation.recruits.compat.IWeapon;
 import com.talhanation.recruits.config.RecruitsServerConfig;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
 import net.mcreator.crustychunks.init.CrustyChunksModSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -147,6 +149,8 @@ public abstract class WariumWeapon implements IWeapon {
         return null;
     }
 
+    protected abstract void playShootSounds(Level world, BlockPos pos);
+
     public int getBulletAmount() {
         return 1;
     }
@@ -218,7 +222,11 @@ public abstract class WariumWeapon implements IWeapon {
                 AbstractArrow projectile = this.shootArrow(recruit, abstractArrow, 0, 0, 0);
 
                 recruit.level().addFreshEntity(projectile);
+
+
             }
+
+            this.playShootSounds(recruit.level(), recruit.blockPosition());
 
             if(consumeAmmo) {
                 this.consumeAmmo(recruit.getMainHandItem(), 1);
@@ -270,8 +278,6 @@ public abstract class WariumWeapon implements IWeapon {
             } else {
                 stack.setCount(0);
             }
-
-
 
             recruit.level().playSound(null, recruit.blockPosition(), SoundEvent.createVariableRangeEvent(this.getLoadSound().getLocation()), SoundSource.NEUTRAL, 2.5F, 1.0F);
 

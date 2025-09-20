@@ -5,11 +5,13 @@ import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
 import net.mcreator.crustychunks.init.CrustyChunksModSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.level.Level;
 
 public class AutomaticRifleWeapon extends WariumWeapon {
     public AutomaticRifleWeapon() {
@@ -21,6 +23,11 @@ public class AutomaticRifleWeapon extends WariumWeapon {
     @Override
     public int getMaxAmmo() {
         return RecruitsWariumConfig.MAX_AUTOMATIC_RIFLE_AMMO.get();
+    }
+
+    @Override
+    protected void playShootSounds(Level world, BlockPos pos) {
+
     }
 
     @Override

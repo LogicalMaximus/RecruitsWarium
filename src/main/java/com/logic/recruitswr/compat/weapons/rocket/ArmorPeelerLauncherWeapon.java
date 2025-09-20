@@ -5,11 +5,17 @@ import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
 import net.mcreator.crustychunks.init.CrustyChunksModSounds;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ArmorPeelerLauncherWeapon extends WariumWeapon {
     public ArmorPeelerLauncherWeapon() {
@@ -21,6 +27,25 @@ public class ArmorPeelerLauncherWeapon extends WariumWeapon {
     @Override
     public int getMaxAmmo() {
         return RecruitsWariumConfig.MAX_ARMOR_PEELER_AMMO.get();
+    }
+
+    @Override
+    protected void playShootSounds(Level world, BlockPos pos) {
+        if (world instanceof Level) {
+            if (!world.isClientSide()) {
+                world.playSound((Player)null, pos, (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("crusty_chunks:rocket_launch")), SoundSource.NEUTRAL, 10.0F, (float)Mth.nextDouble(RandomSource.create(), 1.3, 1.4));
+            } else {
+                world.playLocalSound(pos, (SoundEvent)ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("crusty_chunks:rocket_launch")), SoundSource.NEUTRAL, 10.0F, (float)Mth.nextDouble(RandomSource.create(), 1.3, 1.4), false);
+            }
+        }
+
+        if (world instanceof Level) {
+            if (!world.isClientSide()) {
+                world.playSound((Player)null, pos, (SoundEvent)ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("crusty_chunks:peelerpodfar")), SoundSource.NEUTRAL, 80.0F, (float)Mth.nextDouble(RandomSource.create(), 0.95, 1.05));
+            } else {
+                world.playLocalSound(pos, (SoundEvent)ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("crusty_chunks:peelerpodfar")), SoundSource.NEUTRAL, 80.0F, (float)Mth.nextDouble(RandomSource.create(), 0.95, 1.05), false);
+            }
+        }
     }
 
     @Override
