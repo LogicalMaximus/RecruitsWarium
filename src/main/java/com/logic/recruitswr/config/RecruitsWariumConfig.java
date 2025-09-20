@@ -126,6 +126,8 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_FLAME_THROWER_RELOAD;
 
+    public static final ForgeConfigSpec.ConfigValue<Float> AIM_INACCURACY;
+
     static {
         BUILDER.push("Recruit Warium Turret Config");
 
@@ -210,6 +212,8 @@ public class RecruitsWariumConfig {
         MAX_FLAME_THROWER_AMMO = BUILDER.comment("\nThe Amount Of Ammo For The Flame Thrower With The Recruits \n\t(takes effect after restart)").define("MaxFlameThrowerAmmo", 1000);
         MAX_FLAME_THROWER_COOLDOWN = BUILDER.comment("\nThe Cooldown For The Flame Thrower With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxFlameThrowerCooldown", 1);
         MAX_FLAME_THROWER_RELOAD = BUILDER.comment("\nThe Reload Time For The Flame Thrower With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxFlameThrowerReload", 120);
+
+        AIM_INACCURACY = BUILDER.comment("\nInaccuracy Added To The Recruits Aim So They Don't Have Aimbot \n\t(takes effect after restart)").define("AimInaccuracy", 0.8F);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

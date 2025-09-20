@@ -169,6 +169,9 @@ dependencies {
 
     runtimeOnly fg.deobf("curse.maven:ferritecore-429235:4810975")
 
+    runtimeOnly fg.deobf("curse.maven:embeddium-908741:5681725")
+    runtimeOnly fg.deobf("curse.maven:oculus-581495:6020952")
+
     runtimeOnly fg.deobf("curse.maven:deuf-duplicate-entity-uuid-fix-296646:4598640")
 
     implementation fg.deobf("curse.maven:recruits-523860:6646247")
