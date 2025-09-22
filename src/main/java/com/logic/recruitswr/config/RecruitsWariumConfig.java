@@ -132,6 +132,12 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_DROP_CASINGS;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND;
+
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_RUN_TO_COVER;
+
+    public static final ForgeConfigSpec.ConfigValue<Integer> RECRUIT_COVER_RADIUS;
+
     static {
         BUILDER.comment("Recruit Warium Server Config").push("Weapon Values");
 
@@ -225,6 +231,15 @@ public class RecruitsWariumConfig {
         ADDITIONAL_SHOOT_DELAY = BUILDER.comment("\nAn Additional Delay Added To The Weapon Cooldown To Create The Max Weapon Cooldown \n\t(takes effect after restart)").define("AdditionalShootDelay", 3);
 
         AIMER_NODE_RADIUS = BUILDER.comment("\nThe Radius That The Aimer Will Look For Trigger Nodes At Target \n\t(takes effect after restart)").define("AimerNodeRadius", 16);
+
+        SHOULD_RECRUITS_RUN_TO_COVER = BUILDER.comment("\nWhether Recruits Should Attempt To Find Cover In A Gun Fight \n\t(takes effect after restart)").define("ShouldRunToCover", true);
+
+        RECRUIT_COVER_RADIUS = BUILDER.comment("\nThe Radius At At Which Recruits Will Look For Cover (Can Be CPU Intensive When Set Too High) \n\t(takes effect after restart)").define("RecruitCoverRadius", 8);
+
+        BUILDER.pop();
+        BUILDER.comment("Recruits Behaviour").push("Misc");
+
+        SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND = BUILDER.comment("\nWhether Grenades Should Stay On The Ground Before Exploding Instead Of Despawning \n\t(takes effect after restart)").define("GrenadeStayOnGround", true);
 
         SPEC = BUILDER.build();
     }

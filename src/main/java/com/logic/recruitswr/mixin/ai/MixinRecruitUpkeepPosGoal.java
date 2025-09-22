@@ -1,4 +1,4 @@
-package com.logic.recruitswr.mixin;
+package com.logic.recruitswr.mixin.ai;
 
 import com.logic.recruitswr.bridge.IBulletConsumer;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;

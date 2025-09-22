@@ -1,4 +1,4 @@
-package com.logic.recruitswr.mixin;
+package com.logic.recruitswr.mixin.prodecure;
 
 import net.mcreator.crustychunks.entity.HVParticleProjectileEntity;
 import net.mcreator.crustychunks.init.CrustyChunksModBlocks;

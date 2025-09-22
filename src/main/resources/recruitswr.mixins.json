@@ -5,16 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "recruitswr.refmap.json",
   "mixins": [
-    "MixinAbstractInventoryEntity",
-    "MixinAbstractRecruitEntity",
-    "MixinBowmanEntity",
-    "MixinBulletHitProcdure",
-    "MixinCrossBowmanEntity",
-    "MixinGeneralArmorBypassProcedure",
-    "MixinHEATProjectileHitsBlockProcedure",
     "MixinRecruitEvents",
-    "MixinRecruitUpkeepPosGoal",
-    "MixinRocketHitProcedure",
+    "ai.MixinRecruitUpkeepPosGoal",
     "bullets.extra_large.MixinExtraLargeBulletItem",
     "bullets.flame.MixinPetroliumItem",
     "bullets.large.MixinAPLargeBulletItem",
@@ -30,11 +22,24 @@
     "bullets.small.MixinSmallbulletItem",
     "bullets.small.MixinSmallHollowPointBulletItem",
     "bullets.small.MixinSmallStealthBulletItem",
-    "bullets.very_large.MixinSmallShellItem"
+    "bullets.very_large.MixinSmallShellItem",
+    "grenade.MixinGrenadeProjectile",
+    "prodecure.MixinBulletHitProcdure",
+    "prodecure.MixinGeneralArmorBypassProcedure",
+    "prodecure.MixinGrenadeHitProcedure",
+    "prodecure.MixinHEATProjectileHitsBlockProcedure",
+    "prodecure.MixinRocketHitProcedure",
+    "recruit.MixinAbstractInventoryEntity",
+    "recruit.MixinAbstractRecruitEntity",
+    "recruit.MixinBowmanEntity",
+    "recruit.MixinCrossBowmanEntity"
   ],
   "client": [
+    "client.MixinRecruitHumanRenderer",
     "client.MixinRecruitVillagerModel",
-    "client.MixinRecruitVillagerRenderer"
+    "client.MixinRecruitVillagerRenderer",
+    "grenade.MixinIncendiaryGrenadeProjectileEntity",
+    "grenade.MixinSmokeGrenadeProjectileEntity"
   ],
   "injectors": {
     "defaultRequire": 1

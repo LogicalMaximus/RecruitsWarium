@@ -84,7 +84,6 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
     public void start() {
         super.start();
         this.recruit.setAggressive(true);
-
     }
 
     public void stop() {
@@ -92,9 +91,7 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
         this.recruit.setAggressive(false);
         this.target = null;
         this.seeTime = 0;
-        this.attackTime = -1;
         this.recruit.stopUsingItem();
-
     }
 
     @Override

@@ -219,7 +219,13 @@ public abstract class WariumWeapon implements IWeapon {
             }
 
         } else {
-            ItemStack ammoStack = recruit.inventory.getItem(this.getAmmo(recruit));
+            int ammoPos = this.getAmmo(recruit);
+
+            ItemStack ammoStack = null;
+
+            if(ammoPos != -1) {
+                ammoStack = recruit.inventory.getItem(ammoPos);
+            }
 
             if(entityType != null) {
 

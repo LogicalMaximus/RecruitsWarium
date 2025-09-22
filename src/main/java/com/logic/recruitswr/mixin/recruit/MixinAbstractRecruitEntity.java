@@ -1,4 +1,4 @@
-package com.logic.recruitswr.mixin;
+package com.logic.recruitswr.mixin.recruit;
 
 import com.logic.recruitswr.bridge.IBulletConsumer;
 import com.logic.recruitswr.compat.WariumWeapon;
@@ -6,6 +6,7 @@ import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAimerGoal;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAttackGoal;
+import com.logic.recruitswr.entity.ai.RecruitsFindCoverGoal;
 import com.logic.recruitswr.entity.ai.WRNearestAttackableTargetGoal;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.Main;
@@ -40,6 +41,7 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
 
     @Inject(method = "registerGoals", at = @At("TAIL"))
     private void registerGoals(CallbackInfo ci) {
+        this.goalSelector.addGoal(2, new RecruitsFindCoverGoal<>(((AbstractRecruitEntity) (Object)this), 1.15));
         this.goalSelector.addGoal(2, new RecruitRangedWariumAttackGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  1.0));
         this.goalSelector.addGoal(2, new RecruitRangedWariumAimerGoal<>(((AbstractRecruitEntity) (Object)this)));
 
