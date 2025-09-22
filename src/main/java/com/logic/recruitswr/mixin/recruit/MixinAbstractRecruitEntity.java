@@ -40,7 +40,7 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
 
     @Inject(method = "registerGoals", at = @At("TAIL"))
     private void registerGoals(CallbackInfo ci) {
-        this.goalSelector.addGoal(2, new RecruitRangedWariumAttackGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  3.0));
+        this.goalSelector.addGoal(2, new RecruitRangedWariumAttackGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  1.0));
         this.goalSelector.addGoal(2, new RecruitRangedWariumAimerGoal<>(((AbstractRecruitEntity) (Object)this)));
 
         if(RecruitsWariumConfig.SHOULD_TARGET_MONSTERS.get()) {
