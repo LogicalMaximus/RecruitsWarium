@@ -1,5 +1,6 @@
 package com.logic.recruitswr.entity.ai;
 
+import com.logic.recruitswr.bridge.IBulletConsumer;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
@@ -33,10 +34,15 @@ public class RecruitWariumStrategicFire extends Goal {
     public boolean canUse() {
         Item item = this.bowman.getMainHandItem().getItem();
 
+        if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !((IBulletConsumer)bowman).recruits_warium$hasAmmo())
+            return false;
+
         if(RecruitsWariumUtils.isWariumGun(item)) {
             this.weapon = WariumWeapons.getWeaponFromItem(item);
 
             if (this.bowman.getTarget() == null && this.bowman.getShouldStrategicFire()  && this.bowman.getFollowState() != 5 && !this.bowman.needsToGetFood() && !this.bowman.getShouldMount()) {
+
+
                 return true;
             } else {
                 this.pos = null;
@@ -63,7 +69,7 @@ public class RecruitWariumStrategicFire extends Goal {
 
         this.pos = this.bowman.StrategicFirePos();
 
-        if(this.weapon.hasAmmo(this.bowman.getMainHandItem())) {
+        if(!RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() || this.weapon.hasAmmo(this.bowman.getMainHandItem())) {
             if (this.pos != null) {
                 double d0 = this.bowman.distanceToSqr((double)this.pos.getX(), this.bowman.getY(), (double)this.pos.getZ());
                 this.bowman.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3((double)this.pos.getX(), (double)(this.pos.getY()), (double)this.pos.getZ()));
@@ -75,7 +81,7 @@ public class RecruitWariumStrategicFire extends Goal {
             }
         }
         else {
-            this.weapon.reloadWeapon(this.bowman);
+            this.attackTime = this.weapon.reloadWeapon(this.bowman);
         }
 
     }

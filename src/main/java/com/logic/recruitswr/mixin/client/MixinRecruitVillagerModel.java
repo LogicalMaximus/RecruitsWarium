@@ -1,6 +1,5 @@
 package com.logic.recruitswr.mixin.client;
 
-import com.logic.recruitswr.bridge.IPose;
 import com.logic.recruitswr.entity.poses.RecruitPose;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.talhanation.recruits.client.models.RecruitVillagerModel;
@@ -49,18 +48,6 @@ public abstract class MixinRecruitVillagerModel extends HumanoidModel<AbstractRe
         this.rightLeg = part.getChild("right_leg");
         this.leftArm = part.getChild("left_arm");
         this.rightArm = part.getChild("right_arm");
-    }
-
-    @Inject(method = "setupAnim(Lcom/talhanation/recruits/entities/AbstractRecruitEntity;FFFFF)V", at = @At("HEAD"), remap = false)
-    public void setupAnim(AbstractRecruitEntity recruit, float p_102867_, float p_102868_, float p_102869_, float p_102870_, float p_102871_, CallbackInfo ci) {
-        RecruitPose pose = ((IPose)recruit).getAimingPose();
-
-        if(pose == RecruitPose.SIGHT_GUN) {
-            AnimationUtils.animateCrossbowCharge(this.rightArm, this.leftArm, recruit, true);
-        }
-        else if(pose == RecruitPose.IDLE_GUN) {
-            AnimationUtils.animateCrossbowHold(this.rightArm, this.leftArm, this.head, true);
-        }
     }
 
     public ModelPart root() {

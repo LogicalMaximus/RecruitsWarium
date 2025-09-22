@@ -3,6 +3,7 @@ package com.logic.recruitswr.compat.weapons.medium;
 import com.logic.recruitswr.compat.AmmoTypes;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
+import com.logic.recruitswr.utils.RecruitsWariumSoundUtils;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
 import net.mcreator.crustychunks.init.CrustyChunksModSounds;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,7 @@ public class AutomaticRifleWeapon extends WariumWeapon {
 
     @Override
     protected void playShootSounds(Level world, BlockPos pos) {
-
+        RecruitsWariumSoundUtils.playMediumRifleSounds(world, pos);
     }
 
     @Override

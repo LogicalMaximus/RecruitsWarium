@@ -41,8 +41,6 @@ public class BreechRifleWeapon extends WariumWeapon {
                 world.playLocalSound(pos, (SoundEvent)ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("crusty_chunks:largeshot")), SoundSource.NEUTRAL, 15.0F, (float)Mth.nextDouble(RandomSource.create(), 0.7, 0.8), false);
             }
 
-
-
             if (!world.isClientSide()) {
                 world.playSound((Player)null, pos, (SoundEvent)ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("crusty_chunks:medium_small_explosion_distant")), SoundSource.NEUTRAL, 40.0F, (float)Mth.nextDouble(RandomSource.create(), 0.9, 1.1));
             } else {

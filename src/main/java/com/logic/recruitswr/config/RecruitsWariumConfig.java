@@ -118,8 +118,6 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_ARMOR_PEELER_RELOAD;
 
-    public static final ForgeConfigSpec.ConfigValue<Boolean> MAGIC_TURRET_SHOOT;
-
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_FLAME_THROWER_AMMO;
 
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_FLAME_THROWER_COOLDOWN;
@@ -128,16 +126,14 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Float> AIM_INACCURACY;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> FRIENDLY_FIRE;
+
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_TARGET_MONSTERS;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_DROP_CASINGS;
+
     static {
-        BUILDER.push("Recruit Warium Server Config");
-
-        ADDITIONAL_SHOOT_DELAY = BUILDER.comment("\nAn Additional Delay Added To The Weapon Cooldown To Create The Max Weapon Cooldown \n\t(takes effect after restart)").define("AdditionalShootDelay", 3);
-
-        AIMER_NODE_RADIUS = BUILDER.comment("\nThe Radius That The Aimer Will Look For Trigger Nodes At Target \n\t(takes effect after restart)").define("AimerNodeRadius", 16);
-
-        MAGIC_TURRET_SHOOT = BUILDER.comment("\nWhether The Recruit Can Shoot Turrets Without Redstone Activation \n\t(takes effect after restart)").define("MagicTurretShoot", true);
+        BUILDER.comment("Recruit Warium Server Config").push("Weapon Values");
 
         MAX_AUTOMATIC_RIFLE_AMMO = BUILDER.comment("\nThe Amount Of Ammo For Automatic Rifle With The Recruits \n\t(takes effect after restart)").define("MaxAutomaticRifleAmmo", 30);
         MAX_AUTOMATIC_RIFLE_COOLDOWN = BUILDER.comment("\nThe Cooldown For Automatic Rifle With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxAutomaticRifleCooldown", 4);
@@ -215,11 +211,21 @@ public class RecruitsWariumConfig {
         MAX_FLAME_THROWER_COOLDOWN = BUILDER.comment("\nThe Cooldown For The Flame Thrower With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxFlameThrowerCooldown", 1);
         MAX_FLAME_THROWER_RELOAD = BUILDER.comment("\nThe Reload Time For The Flame Thrower With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxFlameThrowerReload", 120);
 
+        BUILDER.pop();
+        BUILDER.comment("Recruits Behaviour").push("Behaviour");
+
         AIM_INACCURACY = BUILDER.comment("\nInaccuracy Added To The Recruits Aim So They Don't Have Aimbot \n\t(takes effect after restart)").define("AimInaccuracy", 0.8F);
 
         SHOULD_TARGET_MONSTERS = BUILDER.comment("\nWhether Recruits Should Target Monsters By Default, This includes Warium AI Robots \n\t(takes effect after restart)").define("ShouldRecruitsTargetMonsters", true);
 
-        BUILDER.pop();
+        SHOULD_RECRUITS_DROP_CASINGS = BUILDER.comment("\nWhether Recruits Should Drop Bullet Casings \n\t(takes effect after restart)").define("ShouldRecruitsDropCasings", true);
+
+        FRIENDLY_FIRE = BUILDER.comment("\nWhether Recruits Should Be Able To Hit Friendly Units \n\t(takes effect after restart)").define("FriendlyFire", false);
+
+        ADDITIONAL_SHOOT_DELAY = BUILDER.comment("\nAn Additional Delay Added To The Weapon Cooldown To Create The Max Weapon Cooldown \n\t(takes effect after restart)").define("AdditionalShootDelay", 3);
+
+        AIMER_NODE_RADIUS = BUILDER.comment("\nThe Radius That The Aimer Will Look For Trigger Nodes At Target \n\t(takes effect after restart)").define("AimerNodeRadius", 16);
+
         SPEC = BUILDER.build();
     }
 

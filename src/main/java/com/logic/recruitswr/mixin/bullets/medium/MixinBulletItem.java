@@ -1,6 +1,7 @@
 package com.logic.recruitswr.mixin.bullets.medium;
 
 import com.logic.recruitswr.bridge.IAmmo;
+import com.logic.recruitswr.compat.weapons.CasingTypes;
 import net.mcreator.crustychunks.init.CrustyChunksModEntities;
 import net.mcreator.crustychunks.item.BulletItem;
 import net.minecraft.world.entity.EntityType;
@@ -18,5 +19,10 @@ public abstract class MixinBulletItem extends Item implements IAmmo {
     @Override
     public @NotNull EntityType<? extends AbstractArrow> getProjecile() {
         return CrustyChunksModEntities.BULLETFIRE_PROJECTILE.get();
+    }
+
+    @Override
+    public Item getCasing() {
+        return CasingTypes.MEDIUM.getItem();
     }
 }

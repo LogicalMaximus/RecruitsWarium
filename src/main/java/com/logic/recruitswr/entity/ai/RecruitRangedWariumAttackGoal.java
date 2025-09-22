@@ -1,10 +1,9 @@
 package com.logic.recruitswr.entity.ai;
 
-import com.logic.recruitswr.bridge.IPose;
+import com.logic.recruitswr.bridge.IBulletConsumer;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
-import com.logic.recruitswr.entity.poses.RecruitPose;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.config.RecruitsServerConfig;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
@@ -39,6 +38,9 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
 
     @Override
     public boolean canUse() {
+        if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !((IBulletConsumer)recruit).recruits_warium$hasAmmo())
+            return false;
+
         LivingEntity livingentity = this.recruit.getTarget();
 
         if (livingentity != null && livingentity.isAlive() && isHoldingGun(this.recruit)) {
@@ -83,7 +85,6 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
         super.start();
         this.recruit.setAggressive(true);
 
-        ((IPose)this.recruit).setAimingPose(RecruitPose.SIGHT_GUN);
     }
 
     public void stop() {
@@ -94,7 +95,6 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
         this.attackTime = -1;
         this.recruit.stopUsingItem();
 
-        ((IPose)this.recruit).setAimingPose(RecruitPose.IDLE_GUN);
     }
 
     @Override

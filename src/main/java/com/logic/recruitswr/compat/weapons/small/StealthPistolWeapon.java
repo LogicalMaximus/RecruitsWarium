@@ -5,6 +5,8 @@ import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
 import net.mcreator.crustychunks.init.CrustyChunksModSounds;
+import net.mcreator.crustychunks.procedures.SmallCasingDropProcedure;
+import net.mcreator.crustychunks.procedures.StealthPistolFireSoundProcedure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,7 +28,12 @@ public class StealthPistolWeapon extends WariumWeapon {
 
     @Override
     protected void playShootSounds(Level world, BlockPos pos) {
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
 
+        SmallCasingDropProcedure.execute(world, x, y, z);
+        StealthPistolFireSoundProcedure.execute(world, x, y, z);
     }
 
     @Override

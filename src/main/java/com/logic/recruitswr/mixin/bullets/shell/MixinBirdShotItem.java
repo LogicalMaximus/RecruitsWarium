@@ -1,6 +1,7 @@
 package com.logic.recruitswr.mixin.bullets.shell;
 
 import com.logic.recruitswr.bridge.IAmmo;
+import com.logic.recruitswr.compat.weapons.CasingTypes;
 import net.mcreator.crustychunks.init.CrustyChunksModEntities;
 import net.mcreator.crustychunks.item.BirdShotItem;
 import net.minecraft.world.entity.EntityType;
@@ -17,5 +18,10 @@ public abstract class MixinBirdShotItem extends Item implements IAmmo {
     @Override
     public EntityType<? extends AbstractArrow> getProjecile() {
         return CrustyChunksModEntities.BIRDSHOT_PARTICLE.get();
+    }
+
+    @Override
+    public Item getCasing() {
+        return CasingTypes.SHELL.getItem();
     }
 }

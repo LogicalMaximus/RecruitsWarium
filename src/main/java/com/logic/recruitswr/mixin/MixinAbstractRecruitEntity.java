@@ -1,24 +1,23 @@
 package com.logic.recruitswr.mixin;
 
-import com.logic.recruitswr.bridge.IPose;
+import com.logic.recruitswr.bridge.IBulletConsumer;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAimerGoal;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAttackGoal;
-import com.logic.recruitswr.entity.ai.RecruitWariumStrategicFire;
 import com.logic.recruitswr.entity.ai.WRNearestAttackableTargetGoal;
-import com.logic.recruitswr.entity.poses.RecruitPose;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.Main;
 import com.talhanation.recruits.compat.IWeapon;
 import com.talhanation.recruits.entities.*;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -27,16 +26,13 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractRecruitEntity.class)
-public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity implements IPose {
-
-    @Unique
-    private RecruitPose pose;
+public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity implements IBulletConsumer {
 
     public MixinAbstractRecruitEntity(EntityType<? extends AbstractInventoryEntity> entityType, Level world) {
         super(entityType, world);
@@ -52,26 +48,31 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         }
     }
 
-    @Inject(method = "addAdditionalSaveData", at = @At("HEAD"))
-    private void addAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
-        nbt.putString("pose", this.pose.toString());
+    @Override
+    public boolean needsBullets() {
+        int timer = this.getUpkeepTimer();
+
+        return !recruits_warium$hasAmmo();
     }
 
-    @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))
-    private void readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
-        if(nbt.contains("pose")) {
-            this.pose = RecruitPose.valueOf(nbt.getString("pose"));
+    @Shadow(remap = false)
+    public int getUpkeepTimer() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public boolean recruits_warium$hasAmmo() {
+        Item item = this.getMainHandItem().getItem();
+
+        if (RecruitsWariumUtils.isWariumGun(item)) {
+            WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item);
+
+            if(weapon.getAmmo(((AbstractRecruitEntity) (Object)this)) != -1) {
+                return true;
+            }
         }
-    }
 
-    @Override
-    public RecruitPose getAimingPose() {
-        return pose;
-    }
-
-    @Override
-    public void setAimingPose(RecruitPose pose) {
-        this.pose = pose;
+        return false;
     }
 
     /**
@@ -108,18 +109,18 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
                         this.inventory.addItem(equipment);
                         itemstack.shrink(equipment.getCount());
                     }
+                }
+            }
 
-                    Item item = this.getMainHandItem().getItem();
+            Item item = this.getMainHandItem().getItem();
 
-                    if (RecruitsWariumUtils.isWariumGun(item)) {
-                        WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item);
+            if (RecruitsWariumUtils.isWariumGun(item)) {
+                WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item);
 
-                        if(weapon.getAmmo().contains(item)) {
-                            ItemStack equipment = itemstack.copy();
-                            this.inventory.addItem(equipment);
-                            itemstack.shrink(equipment.getCount());
-                        }
-                    }
+                if(weapon.getAmmo().contains(itemstack.getItem())) {
+                    ItemStack equipment = itemstack.copy();
+                    this.inventory.addItem(equipment);
+                    itemstack.shrink(equipment.getCount());
                 }
             }
 
@@ -149,6 +150,24 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
     @Shadow(remap = false)
     public boolean canEatItemStack(ItemStack stack) {
         throw new AssertionError();
+    }
+
+    @Inject(method = "hurt", at = @At("HEAD"))
+    public void hurt(DamageSource dmg, float amt, CallbackInfoReturnable<Boolean> cir) {
+        Entity entity = dmg.getEntity();
+
+        if(entity instanceof AbstractArrow) {
+            if(!RecruitsWariumConfig.FRIENDLY_FIRE.get()) {
+                Entity owner = dmg.getDirectEntity();
+
+                if(owner instanceof AbstractRecruitEntity recruit) {
+                    if(!recruit.canAttack((((AbstractRecruitEntity) (Object)this)))) {
+                        cir.setReturnValue(false);
+                    }
+                }
+            }
+        }
+
     }
 
 }

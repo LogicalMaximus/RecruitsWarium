@@ -1,22 +1,32 @@
 package com.logic.recruitswr.compat;
 
 import com.logic.recruitswr.bridge.IAmmo;
+import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.talhanation.recruits.compat.IWeapon;
 import com.talhanation.recruits.config.RecruitsServerConfig;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
+import net.mcreator.crustychunks.init.CrustyChunksModItems;
+import net.mcreator.crustychunks.init.CrustyChunksModParticleTypes;
 import net.mcreator.crustychunks.init.CrustyChunksModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -164,7 +174,11 @@ public abstract class WariumWeapon implements IWeapon {
     }
 
     public void performRangedAttack(AbstractRecruitEntity recruit) {
-        Optional<Holder<EntityType<?>>> holder = ForgeRegistries.ENTITY_TYPES.getHolder(ResourceLocation.tryParse(recruit.getMainHandItem().getOrCreateTag().getString("Projectile")));
+        Item item = null;
+
+        CompoundTag tag = recruit.getMainHandItem().getOrCreateTag();
+
+        Optional<Holder<EntityType<?>>> holder = ForgeRegistries.ENTITY_TYPES.getHolder(ResourceLocation.tryParse(tag.getString("Projectile")));
 
         EntityType<? extends AbstractArrow> entityType = null;
 
@@ -176,15 +190,24 @@ public abstract class WariumWeapon implements IWeapon {
 
             if(this.hasAmmo(recruit.getMainHandItem())) {
                 if(entityType != null) {
+                    if(tag.contains("Casing")) {
+                        Optional<Holder<Item>> itemHolder = ForgeRegistries.ITEMS.getHolder(ResourceLocation.tryParse(tag.getString("Casing")));
 
-                    this.shootProjectiles(recruit, entityType, true);
+                        if(itemHolder.isPresent()) {
+                            item = itemHolder.get().value();
+                        }
+                    }
+
+                    this.shootProjectiles(item, recruit, entityType, true);
                 } else {
-                    ItemStack ammoStack = this.getAmmo(recruit);
+                    ItemStack ammoStack = recruit.inventory.getItem(this.getAmmo(recruit));
 
                     if(ammoStack != null) {
-                        entityType = ((IAmmo)ammoStack.getItem()).getProjecile();
+                        item = ammoStack.getItem();
 
-                        this.shootProjectiles(recruit, entityType, true);
+                        entityType = ((IAmmo)item).getProjecile();
+
+                        this.shootProjectiles(item, recruit, entityType, true);
                     } else {
 
                         recruit.level().playSound(null, recruit.blockPosition(), SoundEvent.createVariableRangeEvent(CrustyChunksModSounds.DRYFIRE.get().getLocation()), SoundSource.NEUTRAL, 2.5F, 1.0F);
@@ -196,37 +219,48 @@ public abstract class WariumWeapon implements IWeapon {
             }
 
         } else {
-            ItemStack ammoStack = this.getAmmo(recruit);
+            ItemStack ammoStack = recruit.inventory.getItem(this.getAmmo(recruit));
 
             if(entityType != null) {
 
-                this.shootProjectiles(recruit, entityType, false);
-
+                this.shootProjectiles(null, recruit, entityType, false);
             } else if(ammoStack != null) {
-                entityType = ((IAmmo)ammoStack.getItem()).getProjecile();
+                item = ammoStack.getItem();
 
-                this.shootProjectiles(recruit, entityType, true);
+                entityType = ((IAmmo)item).getProjecile();
+
+                this.shootProjectiles(null, recruit, entityType, true);
             } else {
-                Item item = this.getAmmo().get(0);
+                item = this.getAmmo().get(0);
 
-                this.shootProjectiles(recruit, ((IAmmo)item).getProjecile(), false);
+                this.shootProjectiles(null, recruit, ((IAmmo)item).getProjecile(), false);
             }
         }
     }
 
-    private void shootProjectiles(AbstractRecruitEntity recruit, EntityType<? extends AbstractArrow> entityType, boolean consumeAmmo) {
+    private void shootProjectiles(Item item, AbstractRecruitEntity recruit, EntityType<? extends AbstractArrow> entityType, boolean consumeAmmo) {
+        Level level = recruit.level();
+
         for (int i = 0; i < this.getShotAmount(); i++) {
             for(int j = 0; j < this.getBulletAmount(); j++) {
-                AbstractArrow abstractArrow = entityType.create(recruit.level());
+                AbstractArrow abstractArrow = entityType.create(level);
 
                 AbstractArrow projectile = this.shootArrow(recruit, abstractArrow, 0, 0, 0);
 
-                recruit.level().addFreshEntity(projectile);
-
-
+                level.addFreshEntity(projectile);
             }
 
-            this.playShootSounds(recruit.level(), recruit.blockPosition());
+            level.addParticle((SimpleParticleType) CrustyChunksModParticleTypes.GUN_SMOKE.get(), recruit.getX() + recruit.getLookAngle().x * 0.8, recruit.getY() + (double)recruit.getEyeHeight() - 0.1, recruit.getZ() + recruit.getLookAngle().z * 0.8, recruit.getLookAngle().x * 0.2 + Mth.nextDouble(RandomSource.create(), -0.05, 0.05), recruit.getLookAngle().y * 0.2 + Mth.nextDouble(RandomSource.create(), -0.05, 0.05), recruit.getLookAngle().z * 0.2 + Mth.nextDouble(RandomSource.create(), -0.05, 0.05));
+
+            this.playShootSounds(level, recruit.blockPosition());
+
+            if(item != null && RecruitsWariumConfig.SHOULD_RECRUITS_DROP_CASINGS.get()) {
+                Vec3 eyePosition = recruit.getEyePosition().subtract(0, 0.5, 0);
+
+                ItemEntity entityToSpawn = new ItemEntity(level, eyePosition.x, eyePosition.y, eyePosition.z, new ItemStack((ItemLike) CrustyChunksModItems.MEDIUM_CASING.get()));
+                entityToSpawn.setPickUpDelay(10);
+                level.addFreshEntity(entityToSpawn);
+            }
 
             if(consumeAmmo) {
                 this.consumeAmmo(recruit.getMainHandItem(), 1);
@@ -234,7 +268,7 @@ public abstract class WariumWeapon implements IWeapon {
         }
     }
 
-    private ItemStack getAmmo(AbstractRecruitEntity recruit) {
+    public int getAmmo(AbstractRecruitEntity recruit) {
         for(int i = 0; i < recruit.inventory.getContainerSize(); i++) {
             ItemStack itemStack = recruit.inventory.getItem(i);
 
@@ -243,44 +277,84 @@ public abstract class WariumWeapon implements IWeapon {
                     Item item = itemStack.getItem();
 
                     if(this.getAmmo().contains(item) && item instanceof IAmmo) {
-                        return itemStack;
+                        return i;
                     }
                 }
             }
         }
 
 
-        return null;
+        return -1;
     }
 
     public int reloadWeapon(AbstractRecruitEntity recruit) {
-        ItemStack stack = this.getAmmo(recruit);
+        CompoundTag tag = recruit.getMainHandItem().getOrCreateTag();
 
-        if(stack != null) {
-            int remainder;
+        int ammoLocation = this.getAmmo(recruit);
 
-            if(this.isAmmoMagazine()) {
-                remainder = this.addAmmo(recruit.getMainHandItem(), this.getMaxAmmo());
-            } else {
-                remainder = this.addAmmo(recruit.getMainHandItem(), stack.getCount());
-            }
+        if(ammoLocation != -1) {
+            ItemStack stack = recruit.inventory.getItem(ammoLocation);
 
             EntityType<? extends AbstractArrow> projecile = ((IAmmo) stack.getItem()).getProjecile();
 
             ResourceLocation entityID = ForgeRegistries.ENTITY_TYPES.getKey(projecile);
 
             if(entityID != null) {
-                recruit.getMainHandItem().getOrCreateTag().putString("Projectile", entityID.toString());
+                tag.putString("Projectile", entityID.toString());
             }
 
-            if(remainder > 0 ) {
-                stack.setCount(remainder);
-            } else {
-                stack.setCount(0);
+            Item casing = ((IAmmo) stack.getItem()).getCasing();
+
+            if(casing != null) {
+                ResourceLocation casingID = ForgeRegistries.ITEMS.getKey(casing);
+
+                tag.putString("Casing", casingID.toString());
             }
 
             recruit.level().playSound(null, recruit.blockPosition(), SoundEvent.createVariableRangeEvent(this.getLoadSound().getLocation()), SoundSource.NEUTRAL, 2.5F, 1.0F);
 
+            int remainder;
+
+            if(this.isAmmoMagazine()) {
+                remainder = this.addAmmo(recruit.getMainHandItem(), this.getMaxAmmo());
+
+                stack.setCount(remainder - 1);
+
+            } else {
+                remainder = this.addAmmo(recruit.getMainHandItem(), stack.getCount());
+
+                if(remainder > 0 ) {
+                    stack.setCount(remainder);
+                } else {
+                    recruit.inventory.removeItem(ammoLocation, stack.getCount());
+
+                    stack = null;
+                }
+
+                double amount = tag.getDouble("Ammo");
+
+                while (amount < this.getMaxAmmo()) {
+                    int spot = this.getAmmo(recruit);
+
+                    if(spot == -1) break;
+
+                    ItemStack filler = recruit.inventory.getItem(spot);
+
+                    remainder = this.addAmmo(recruit.getMainHandItem(), filler.getCount());
+
+                    if(remainder > 0 ) {
+                        filler.setCount(remainder);
+                    } else {
+                        recruit.inventory.removeItem(spot, filler.getCount());
+
+                        filler = null;
+                    }
+
+                    amount = tag.getDouble("Ammo");
+                }
+
+
+            }
 
             return this.getWeaponLoadTime();
         }
