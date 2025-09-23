@@ -1,6 +1,7 @@
 package com.logic.recruitswr.entity.ai;
 
 import com.logic.recruitswr.config.RecruitsWariumConfig;
+import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -95,7 +96,7 @@ public class RecruitsFindCoverGoal<T extends AbstractRecruitEntity> extends Goal
             BlockPos checkPos = blockPos.relative(dir);
             if (world.getBlockState(checkPos).isAir() && world.getBlockState(checkPos.above()).isAir()) {
                 if(target != null) {
-                    if(!hasLineOfSight(target, new Vec3(entity.getX(), entity.getEyeY(), entity.getZ()))) {
+                    if(!RecruitsWariumUtils.hasLineOfSight(target, new Vec3(entity.getX(), entity.getEyeY(), entity.getZ()))) {
                         return checkPos;
                     }
                 }
@@ -103,14 +104,5 @@ public class RecruitsFindCoverGoal<T extends AbstractRecruitEntity> extends Goal
         }
 
         return null;
-    }
-
-    public static boolean hasLineOfSight(LivingEntity entity, Vec3 vec31) {
-        Vec3 vec3 = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
-        if (vec31.distanceTo(vec3) > (double)64.0F) {
-            return false;
-        } else {
-            return entity.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
-        }
     }
 }

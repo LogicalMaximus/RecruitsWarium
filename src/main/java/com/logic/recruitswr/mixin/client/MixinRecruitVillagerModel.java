@@ -1,6 +1,5 @@
 package com.logic.recruitswr.mixin.client;
 
-import com.logic.recruitswr.entity.poses.RecruitPose;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.talhanation.recruits.client.models.RecruitVillagerModel;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;

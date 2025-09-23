@@ -138,6 +138,8 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Integer> RECRUIT_COVER_RADIUS;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> REALISTIC_LOOK_CONTROL;
+
     static {
         BUILDER.comment("Recruit Warium Server Config").push("Weapon Values");
 
@@ -235,6 +237,8 @@ public class RecruitsWariumConfig {
         SHOULD_RECRUITS_RUN_TO_COVER = BUILDER.comment("\nWhether Recruits Should Attempt To Find Cover In A Gun Fight \n\t(takes effect after restart)").define("ShouldRunToCover", true);
 
         RECRUIT_COVER_RADIUS = BUILDER.comment("\nThe Radius At At Which Recruits Will Look For Cover (Can Be CPU Intensive When Set Too High) \n\t(takes effect after restart)").define("RecruitCoverRadius", 8);
+
+        REALISTIC_LOOK_CONTROL = BUILDER.comment("\nOption For Recruits To Use Look Control Rather Than The LookAt Method (Warning: This Gives Them Really Bad Aim) \n\t(takes effect after restart)").define("RealisticLookControl", false);
 
         BUILDER.pop();
         BUILDER.comment("Recruits Behaviour").push("Misc");

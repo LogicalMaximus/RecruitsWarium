@@ -1,7 +1,11 @@
 package com.logic.recruitswr.utils;
 
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 
@@ -14,6 +18,15 @@ public class RecruitsWariumUtils {
         }
 
         return false;
+    }
+
+    public static boolean hasLineOfSight(LivingEntity entity, Vec3 vec31) {
+        Vec3 vec3 = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
+        if (vec31.distanceTo(vec3) > (double)64.0F) {
+            return false;
+        } else {
+            return entity.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
+        }
     }
 
      static {

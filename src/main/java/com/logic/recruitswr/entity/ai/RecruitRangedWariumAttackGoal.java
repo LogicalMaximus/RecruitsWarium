@@ -125,7 +125,13 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
                 this.handleWander(inRange, isFar, isClose);
             }
 
-            this.recruit.lookAt(EntityAnchorArgument.Anchor.EYES, this.target.getEyePosition(1.0F));
+            Vec3 eyePosition = this.target.getEyePosition(1.0F);
+
+            if(RecruitsWariumConfig.REALISTIC_LOOK_CONTROL.get()) {
+                this.recruit.getLookControl().setLookAt(eyePosition.x, eyePosition.y, eyePosition.z, 60.0F, 90.0F);
+            } else {
+                this.recruit.lookAt(EntityAnchorArgument.Anchor.EYES, eyePosition);
+            }
 
             ItemStack itemStack = this.recruit.getMainHandItem();
 
@@ -134,18 +140,13 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
             }
 
             if (this.attackTime <= 0) {
+                this.weapon.performRangedAttack(this.recruit);
 
-                if (!canSee && this.seeTime < -60) {
-                    //((IPose)this.recruit).setAimingPose(RecruitPose.IDLE_GUN);
-                } else if (canSee) {
-                    this.weapon.performRangedAttack(this.recruit);
+                float f = Mth.sqrt((float)distance) / this.weapon.attackRadius();
+                float attackIntervalMax = this.weapon.getAttackCooldown() + RecruitsWariumConfig.ADDITIONAL_SHOOT_DELAY.get();
+                float attackIntervalMin = this.weapon.getAttackCooldown();
 
-                    float f = Mth.sqrt((float)distance) / this.weapon.attackRadius();
-                    float attackIntervalMax = this.weapon.getAttackCooldown() + RecruitsWariumConfig.ADDITIONAL_SHOOT_DELAY.get();
-                    float attackIntervalMin = this.weapon.getAttackCooldown();
-
-                    this.attackTime = Mth.floor(f * (float)(attackIntervalMax - attackIntervalMin) + (float)attackIntervalMin);
-                }
+                this.attackTime = Mth.floor(f * (float)(attackIntervalMax - attackIntervalMin) + (float)attackIntervalMin);
             }
 
         }
