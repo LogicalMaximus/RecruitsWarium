@@ -67,6 +67,8 @@ public class RecruitWariumStrategicFire extends Goal {
 
         this.pos = this.bowman.StrategicFirePos();
 
+        if(this.pos == null)return;
+
         if(this.attackTime <= 0) {
             Vec3 vec3 = new Vec3((double) this.pos.getX(), (double) (this.pos.getY()), (double) this.pos.getZ());
 
