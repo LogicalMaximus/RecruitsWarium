@@ -140,6 +140,8 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> REALISTIC_LOOK_CONTROL;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_MERCENARIES_SPAWN;
+
     static {
         BUILDER.comment("Recruit Warium Server Config").push("Weapon Values");
 
@@ -244,6 +246,8 @@ public class RecruitsWariumConfig {
         BUILDER.comment("Recruits Behaviour").push("Misc");
 
         SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND = BUILDER.comment("\nWhether Grenades Should Stay On The Ground Before Exploding Instead Of Despawning \n\t(takes effect after restart)").define("GrenadeStayOnGround", true);
+
+        SHOULD_MERCENARIES_SPAWN = BUILDER.comment("\nWhether Aggressive Mercenaries Should Spawn \n\t(takes effect after restart)").define("ShouldMercenariesSpawn", false);
 
         SPEC = BUILDER.build();
     }

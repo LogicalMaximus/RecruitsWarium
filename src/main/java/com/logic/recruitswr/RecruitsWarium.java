@@ -1,9 +1,13 @@
 package com.logic.recruitswr;
 
+import com.logic.recruitswr.commands.MercenaryPatrolSpawnCommand;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
+import com.logic.recruitswr.events.MercenaryPatrolSpawner;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -27,5 +31,11 @@ public class RecruitsWarium {
 
         MinecraftForge.EVENT_BUS.register(this);
 
+        MinecraftForge.EVENT_BUS.register(new MercenaryPatrolSpawner());
+    }
+
+    @SubscribeEvent
+    public void registerCommands(RegisterCommandsEvent event) {
+        MercenaryPatrolSpawnCommand.register(event.getDispatcher());
     }
 }
