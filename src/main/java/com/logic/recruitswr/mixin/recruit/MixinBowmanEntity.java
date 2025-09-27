@@ -4,12 +4,16 @@ import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.entity.ai.RecruitWariumStrategicFire;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
+import com.talhanation.recruits.config.RecruitsServerConfig;
 import com.talhanation.recruits.entities.*;
+import com.talhanation.recruits.world.RecruitsPatrolSpawn;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -37,6 +41,26 @@ public abstract class MixinBowmanEntity extends AbstractRecruitEntity implements
                 cir.setReturnValue(true);
             }
         }
+    }
+
+    /**
+     * @author LogicalMaximus
+     * @reason Make Bowman Not Spawn With Arrows If Weapon Is Warium Weapon
+     */
+    @Overwrite(remap = false)
+    public void initSpawn() {
+        this.setCustomName(Component.literal("Bowman"));
+        this.setCost((Integer) RecruitsServerConfig.BowmanCost.get());
+        this.setEquipment();
+        this.setDropEquipment();
+        this.setRandomSpawnBonus();
+        this.setPersistenceRequired();
+        this.setGroup(2);
+        if ((Boolean)RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !RecruitsWariumUtils.isWariumGun(this.getMainHandItem().getItem())) {
+            RecruitsPatrolSpawn.setRangedArrows(this);
+        }
+
+        AbstractRecruitEntity.applySpawnValues(this);
     }
 
 }

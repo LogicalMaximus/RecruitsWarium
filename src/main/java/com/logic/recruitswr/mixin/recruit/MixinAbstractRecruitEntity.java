@@ -8,6 +8,7 @@ import com.logic.recruitswr.entity.ai.RecruitRangedWariumAimerGoal;
 import com.logic.recruitswr.entity.ai.RecruitRangedWariumAttackGoal;
 import com.logic.recruitswr.entity.ai.RecruitsFindCoverGoal;
 import com.logic.recruitswr.entity.ai.WRNearestAttackableTargetGoal;
+import com.logic.recruitswr.utils.RecruitsWariumSpawnUtils;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.Main;
 import com.talhanation.recruits.compat.IWeapon;
@@ -170,6 +171,11 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
             }
         }
 
+    }
+
+    @Inject(method = "setEquipment", at = @At("TAIL"), remap = false)
+    public void initSpawn(CallbackInfo ci) {
+        RecruitsWariumSpawnUtils.setRangedBullets(((AbstractRecruitEntity) (Object)this));
     }
 
 }
