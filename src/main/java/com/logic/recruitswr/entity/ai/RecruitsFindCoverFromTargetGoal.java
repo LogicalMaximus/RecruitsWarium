@@ -16,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class RecruitsFindCoverGoal<T extends AbstractRecruitEntity> extends Goal {
     private final T recruit;
@@ -29,13 +30,13 @@ public class RecruitsFindCoverGoal<T extends AbstractRecruitEntity> extends Goal
 
     @Override
     public boolean canUse() {
+
+
         if(RecruitsWariumConfig.SHOULD_RECRUITS_RUN_TO_COVER.get()) {
             this.target = this.recruit.getTarget();
 
             if(target != null) {
-                if(target.hasLineOfSight(recruit)) {
-                    return true;
-                }
+                return target.hasLineOfSight(recruit);
             }
         }
 
@@ -50,9 +51,9 @@ public class RecruitsFindCoverGoal<T extends AbstractRecruitEntity> extends Goal
             return recruit.distanceToSqr(position.getCenter());
         }));
 
+        Stream<BlockPos> stream = coverPositions.stream().filter((e) -> recruit.distanceToSqr(e.getCenter()) < this.target.distanceToSqr(e.getCenter()));
 
-        coverPositions.stream().findFirst().ifPresent((e) -> recruit.getNavigation().moveTo(e.getX(), e.getY(), e.getZ(), speedModifier));
-
+        stream.findFirst().ifPresent((e) -> recruit.getNavigation().moveTo(e.getX(), e.getY(), e.getZ(), speedModifier));
 
         super.start();
     }
@@ -91,15 +92,10 @@ public class RecruitsFindCoverGoal<T extends AbstractRecruitEntity> extends Goal
 
     private BlockPos findWalkableCover(BlockPos blockPos, AbstractRecruitEntity entity) {
         Level world = entity.level();
-        // Check if the space behind the block is walkable
-        for (Direction dir : Direction.Plane.HORIZONTAL) {
-            BlockPos checkPos = blockPos.relative(dir);
-            if (world.getBlockState(checkPos).isAir() && world.getBlockState(checkPos.above()).isAir()) {
-                if(target != null) {
-                    if(!RecruitsWariumUtils.hasLineOfSight(target, new Vec3(entity.getX(), entity.getEyeY(), entity.getZ()))) {
-                        return checkPos;
-                    }
-                }
+
+        if(target != null) {
+            if(!RecruitsWariumUtils.hasLineOfSight(target, new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()))) {
+                return blockPos;
             }
         }
 
