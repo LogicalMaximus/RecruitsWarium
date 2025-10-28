@@ -18,8 +18,6 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.List;
-
 public class BreechRifleWeapon extends WariumWeapon {
     public BreechRifleWeapon() {
         super(CrustyChunksModItems.BREECH_RIFLE.get());
@@ -58,6 +56,11 @@ public class BreechRifleWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.BREECH_RIFLE_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_BREECH_RIFLE_COOLDOWN.get();
     }
@@ -76,7 +79,7 @@ public class BreechRifleWeapon extends WariumWeapon {
         abstractArrow.setPierceLevel((byte) 4);
 
         abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeY() - 0.1, livingEntity.getZ());
-        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 8.0F, (float) Mth.nextDouble(RandomSource.create(), 0.1, (double)0.1 + RecruitsWariumConfig.AIM_INACCURACY.get()));
+        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 8.0F, (float) Mth.nextDouble(RandomSource.create(), 0.1, (double)0.1 + RecruitsWariumConfig.BULLET_INACCURACY.get()));
 
         return abstractArrow;
     }

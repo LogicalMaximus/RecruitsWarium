@@ -2,6 +2,7 @@ package com.logic.recruitswr.compat;
 
 import com.logic.recruitswr.compat.weapons.extra_large.BreechRifleWeapon;
 import com.logic.recruitswr.compat.weapons.flame.FlameThrowerWeapon;
+import com.logic.recruitswr.compat.weapons.grenades.GrenadeWeapon;
 import com.logic.recruitswr.compat.weapons.large.BattleRifleWeapon;
 import com.logic.recruitswr.compat.weapons.large.BoltActionRifleWeapon;
 import com.logic.recruitswr.compat.weapons.medium.*;
@@ -17,6 +18,8 @@ import java.util.HashMap;
 
 public class WariumWeapons {
     private static final HashMap<Item, WariumWeapon> ITEM_TO_WEAPON = new HashMap<>();
+
+    public static final GrenadeWeapon GRENADE_WEAPON = new GrenadeWeapon();
 
     public static final AutomaticRifleWeapon AUTOMATIC_RIFLE_WEAPON = new AutomaticRifleWeapon();
 
@@ -86,6 +89,8 @@ public class WariumWeapons {
         ITEM_TO_WEAPON.put(FLAME_THROWER_WEAPON.getWeapon(), FLAME_THROWER_WEAPON);
         ITEM_TO_WEAPON.put(CrustyChunksModItems.SCOPED_BREECH_RIFLE.get(), SCOPE_BREECH_RIFLE_WEAPON);
         ITEM_TO_WEAPON.put(CrustyChunksModItems.SCOPED_BOLT_ACTION_RIFLE_ANIMATED.get(), SCOPE_BOLT_ACTION_RIFLE_WEAPON);
+        ITEM_TO_WEAPON.put(GRENADE_WEAPON.getWeapon(), GRENADE_WEAPON);
+
     }
 
 }

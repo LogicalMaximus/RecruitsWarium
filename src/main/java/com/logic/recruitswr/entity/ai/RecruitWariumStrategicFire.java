@@ -17,7 +17,11 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.*;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Random;
+
 public class RecruitWariumStrategicFire extends Goal {
+    private static Random random = new Random();
+
     private final Boolean consumeArrows;
     private BlockPos pos;
     private BowmanEntity bowman;
@@ -37,8 +41,13 @@ public class RecruitWariumStrategicFire extends Goal {
         if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !((IBulletConsumer)bowman).recruits_warium$hasAmmo())
             return false;
 
+        if(((IBulletConsumer)bowman).isFleeing())
+            return false;
+
         if(RecruitsWariumUtils.isWariumGun(item)) {
             this.weapon = WariumWeapons.getWeaponFromItem(item);
+
+            if(!this.weapon.isGun())return false;
 
             if (this.bowman.getTarget() == null && this.bowman.getShouldStrategicFire()  && this.bowman.getFollowState() != 5 && !this.bowman.needsToGetFood() && !this.bowman.getShouldMount()) {
                 return true;
@@ -72,10 +81,16 @@ public class RecruitWariumStrategicFire extends Goal {
         if(this.attackTime <= 0) {
             Vec3 vec3 = new Vec3((double) this.pos.getX(), (double) (this.pos.getY()), (double) this.pos.getZ());
 
+            double radiansInaccuracy = ((IBulletConsumer)this.bowman).calculateInaccuracy(vec3, this.weapon.getBaseWeaponInaccuracy());
+
+            Vec3 lookTarget = ((IBulletConsumer)this.bowman).handleInaccuracy(this.bowman.getEyePosition(), vec3, radiansInaccuracy);
+
+            lookTarget.add(random.nextDouble(-RecruitsWariumConfig.STRATEGIC_FIRE_INACCURACY.get(), RecruitsWariumConfig.STRATEGIC_FIRE_INACCURACY.get()), 0, random.nextDouble(-RecruitsWariumConfig.STRATEGIC_FIRE_INACCURACY.get(), RecruitsWariumConfig.STRATEGIC_FIRE_INACCURACY.get()));
+
             if(RecruitsWariumConfig.REALISTIC_LOOK_CONTROL.get()) {
-                this.bowman.getLookControl().setLookAt(vec3.x, vec3.y, vec3.z, 60.0F, 90.0F);
+                this.bowman.getLookControl().setLookAt(lookTarget.x, lookTarget.y, lookTarget.z, 120.0F, 360.0F);
             } else {
-                this.bowman.lookAt(EntityAnchorArgument.Anchor.EYES, vec3);
+                this.bowman.lookAt(EntityAnchorArgument.Anchor.EYES, lookTarget);
             }
 
             if(!RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() || this.weapon.hasAmmo(this.bowman.getMainHandItem())) {

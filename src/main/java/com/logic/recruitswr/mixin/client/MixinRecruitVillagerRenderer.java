@@ -1,13 +1,17 @@
 package com.logic.recruitswr.mixin.client;
 
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.talhanation.recruits.client.render.RecruitVillagerRenderer;
 import com.talhanation.recruits.entities.AbstractInventoryEntity;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

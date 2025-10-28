@@ -33,6 +33,11 @@ public class SemiAutomaticRifleWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.SEMI_AUTOMATIC_RIFLE_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_SEMI_AUTOMATIC_RIFLE_COOLDOWN.get();
     }
@@ -51,7 +56,7 @@ public class SemiAutomaticRifleWeapon extends WariumWeapon {
         abstractArrow.setPierceLevel((byte) 4);
 
         abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeY() - 0.1, livingEntity.getZ());
-        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 7.5F, (float) Mth.nextDouble(RandomSource.create(), 0.5, (double)0.5 + RecruitsWariumConfig.AIM_INACCURACY.get()));
+        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 7.5F, (float) Mth.nextDouble(RandomSource.create(), 0.5, (double)0.5 + RecruitsWariumConfig.BULLET_INACCURACY.get()));
 
         return abstractArrow;
     }

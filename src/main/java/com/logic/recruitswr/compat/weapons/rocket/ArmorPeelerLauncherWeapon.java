@@ -1,6 +1,5 @@
 package com.logic.recruitswr.compat.weapons.rocket;
 
-import com.logic.recruitswr.compat.AmmoTypes;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
@@ -49,6 +48,11 @@ public class ArmorPeelerLauncherWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.ARMOR_PEELER_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_ARMOR_PEELER_COOLDOWN.get();
     }
@@ -67,7 +71,7 @@ public class ArmorPeelerLauncherWeapon extends WariumWeapon {
         abstractArrow.setPierceLevel((byte) 4);
 
         abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeY() - 0.1, livingEntity.getZ());
-        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 6.0F, (float) Mth.nextDouble(RandomSource.create(), 3.0, (double)3.0 + RecruitsWariumConfig.AIM_INACCURACY.get()));
+        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 6.0F, (float) Mth.nextDouble(RandomSource.create(), 3.0, (double)3.0 + RecruitsWariumConfig.BULLET_INACCURACY.get()));
 
         return abstractArrow;
     }

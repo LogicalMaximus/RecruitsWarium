@@ -31,6 +31,11 @@ public class MachineCarbineWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.MACHINE_CARBINE_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_MACHINE_CARBINE_COOLDOWN.get();
     }

@@ -69,4 +69,9 @@ public class PumpActionShotgunWeapon extends WariumWeapon {
     public int attackRadius() {
         return 24;
     }
+
+    @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.PUMP_ACTION_SHOTGUN_INACCURACY.get();
+    }
 }

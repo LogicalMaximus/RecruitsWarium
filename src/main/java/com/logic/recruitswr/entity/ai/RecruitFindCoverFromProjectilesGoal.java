@@ -4,8 +4,11 @@ import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
@@ -14,33 +17,43 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-public class RecruitsFindCoverFromTargetGoal<T extends AbstractRecruitEntity> extends Goal {
+public class RecruitFindCoverFromProjectilesGoal<T extends AbstractRecruitEntity> extends Goal {
     private final T recruit;
     private final double speedModifier;
-    private LivingEntity target;
 
     private Path path;
 
-    public RecruitsFindCoverFromTargetGoal(T mob, double speedModifier) {
+    private List<Projectile> enemyProjectiles;
+
+    public RecruitFindCoverFromProjectilesGoal(T mob, double speedModifier) {
         this.recruit = mob;
         this.speedModifier = speedModifier;
     }
 
     @Override
     public boolean canUse() {
-
         if(RecruitsWariumConfig.SHOULD_RECRUITS_RUN_TO_COVER.get()) {
-            this.target = this.recruit.getTarget();
+            boolean state = this.recruit.getFollowState() == 0;
+            boolean move = !this.recruit.getShouldMovePos();
+            boolean follow = !this.recruit.getShouldFollow();
 
-            if(target != null) {
-                boolean state = this.recruit.getFollowState() == 0;
-                boolean move = !this.recruit.getShouldMovePos();
-                boolean follow = !this.recruit.getShouldFollow();
+            if(state && move && follow) {
+                List<AbstractArrow> entities = this.recruit.level().getEntitiesOfClass(AbstractArrow.class, this.recruit.getBoundingBox().inflate((Integer) RecruitsWariumConfig.BULLET_SUPPRESSION_RADIUS.get() * 1.5));
 
-                return target.hasLineOfSight(recruit) && state && move && follow;
+                if(!entities.isEmpty()) {
+                    Stream<AbstractArrow> abstractArrowStream = entities.stream().filter((e) -> e.inGroundTime < 20);
+
+                    enemyProjectiles = new ArrayList<>(abstractArrowStream.toList());
+
+                    enemyProjectiles.sort(Comparator.comparingDouble(this.recruit::distanceToSqr));
+
+                    return true;
+                }
             }
+
         }
 
         return false;
@@ -48,15 +61,27 @@ public class RecruitsFindCoverFromTargetGoal<T extends AbstractRecruitEntity> ex
 
     @Override
     public void start() {
-        List<BlockPos> coverPositions = this.getPotentialPositions(recruit);
+        Optional<Projectile> optionalProjectile = enemyProjectiles.stream().findFirst();
 
-        coverPositions.sort(Comparator.comparingDouble((position) -> {
-            return recruit.distanceToSqr(position.getCenter());
-        }));
+        if(optionalProjectile.isPresent()) {
+            Projectile projectile = enemyProjectiles.stream().findFirst().get();
 
-        coverPositions.stream().findFirst().ifPresent((e) -> this.path = this.recruit.getNavigation().createPath(e.getX(), e.getY(), e.getZ(), 1));
+            Entity owner = projectile.getOwner();
 
-        super.tick();
+            if(owner instanceof LivingEntity target) {
+                List<BlockPos> coverPositions = this.getPotentialPositions(recruit, target);
+
+                coverPositions.sort(Comparator.comparingDouble((position) -> {
+                    return recruit.distanceToSqr(position.getCenter());
+                }));
+
+                coverPositions.stream().findFirst().ifPresent((e) -> this.path = this.recruit.getNavigation().createPath(e.getX(), e.getY(), e.getZ(), 1));
+
+
+            }
+        }
+
+        super.start();
     }
 
     @Override
@@ -75,7 +100,7 @@ public class RecruitsFindCoverFromTargetGoal<T extends AbstractRecruitEntity> ex
         super.stop();
     }
 
-    public List<BlockPos> getPotentialPositions(AbstractRecruitEntity entity) {
+    public List<BlockPos> getPotentialPositions(AbstractRecruitEntity entity, LivingEntity target) {
         List<BlockPos> coverPositions = new ArrayList<>();
         BlockPos entityPos = entity.blockPosition();
         Level world = entity.level();
@@ -89,8 +114,7 @@ public class RecruitsFindCoverFromTargetGoal<T extends AbstractRecruitEntity> ex
                     BlockState blockState = world.getBlockState(blockPos);
 
                     if (blockState.isSolid()) {
-                        // Find a walkable spot behind the block
-                        BlockPos coverPos = findWalkableCover(blockPos.offset(0, (int) entity.getEyeHeight(), 0));
+                        BlockPos coverPos = isPositionValid(blockPos.offset(0, (int) entity.getEyeHeight(), 0), target);
 
                         if (coverPos != null) {
                             coverPositions.add(coverPos);
@@ -103,7 +127,7 @@ public class RecruitsFindCoverFromTargetGoal<T extends AbstractRecruitEntity> ex
         return coverPositions;
     }
 
-    private BlockPos findWalkableCover(BlockPos blockPos) {
+    private BlockPos isPositionValid(BlockPos blockPos, LivingEntity target) {
         if(target != null) {
             if(!RecruitsWariumUtils.hasLineOfSight(target, new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()), blockPos)) {
                 return blockPos;

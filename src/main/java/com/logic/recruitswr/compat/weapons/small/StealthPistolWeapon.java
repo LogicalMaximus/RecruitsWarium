@@ -37,6 +37,11 @@ public class StealthPistolWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.STEALTH_PISTOL_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_STEALTH_PISTOL_AMMO.get();
     }

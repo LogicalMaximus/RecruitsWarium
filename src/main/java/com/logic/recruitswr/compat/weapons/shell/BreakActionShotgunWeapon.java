@@ -69,4 +69,9 @@ public class BreakActionShotgunWeapon extends WariumWeapon {
     public int attackRadius() {
         return 24;
     }
+
+    @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.BREAK_ACTION_SHOTGUN_INACCURACY.get();
+    }
 }

@@ -1,7 +1,10 @@
 package com.logic.recruitswr.mixin.grenade;
 
+import com.logic.recruitswr.bridge.IAmmo;
+import com.logic.recruitswr.bridge.IGrenade;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import net.mcreator.crustychunks.entity.SmokeGrenadeProjectileEntity;
+import net.mcreator.crustychunks.init.CrustyChunksModEntities;
 import net.mcreator.crustychunks.procedures.GrenadeProjectileWhileProjectileFlyingTickProcedure;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -11,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(SmokeGrenadeProjectileEntity.class)
-public abstract class MixinSmokeGrenadeProjectileEntity extends AbstractArrow implements ItemSupplier {
+public abstract class MixinSmokeGrenadeProjectileEntity extends AbstractArrow implements ItemSupplier, IGrenade {
     protected MixinSmokeGrenadeProjectileEntity(EntityType<? extends AbstractArrow> p_36721_, Level p_36722_) {
         super(p_36721_, p_36722_);
     }
@@ -31,4 +34,10 @@ public abstract class MixinSmokeGrenadeProjectileEntity extends AbstractArrow im
             }
         }
     }
+
+    @Override
+    public EntityType<? extends AbstractArrow> getProjecile() {
+        return CrustyChunksModEntities.SMOKE_GRENADE_PROJECTILE.get();
+    }
+
 }

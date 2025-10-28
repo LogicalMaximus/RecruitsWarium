@@ -58,6 +58,11 @@ public class AntiMaterialRifleWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.ANTI_MATERIAL_RIFLE_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_ANTI_MATERIAL_RIFLE_COOLDOWN.get();
     }
@@ -76,7 +81,7 @@ public class AntiMaterialRifleWeapon extends WariumWeapon {
         abstractArrow.setPierceLevel((byte) 5);
 
         abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeY() - 0.1, livingEntity.getZ());
-        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 8.0F, (float) Mth.nextDouble(RandomSource.create(), 0.1, (double)0.1 + RecruitsWariumConfig.AIM_INACCURACY.get()));
+        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 8.0F, (float) Mth.nextDouble(RandomSource.create(), 0.1, (double)0.1 + RecruitsWariumConfig.BULLET_INACCURACY.get()));
 
         return abstractArrow;
     }

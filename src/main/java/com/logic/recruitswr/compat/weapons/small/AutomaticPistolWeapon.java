@@ -31,6 +31,11 @@ public class AutomaticPistolWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.AUTOMATIC_RIFLE_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_AUTO_PISTOL_COOLDOWN.get();
     }

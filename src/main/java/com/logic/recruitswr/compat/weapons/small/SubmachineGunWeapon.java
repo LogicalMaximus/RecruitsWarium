@@ -31,6 +31,11 @@ public class SubmachineGunWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.SUBMACHINEGUN_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_SUBMACHINEGUN_COOLDOWN.get();
     }

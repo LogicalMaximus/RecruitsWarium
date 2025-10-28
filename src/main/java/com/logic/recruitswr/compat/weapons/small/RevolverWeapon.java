@@ -31,6 +31,11 @@ public class RevolverWeapon extends WariumWeapon {
     }
 
     @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.REVOLVER_INACCURACY.get();
+    }
+
+    @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_REVOLVER_COOLDOWN.get();
     }

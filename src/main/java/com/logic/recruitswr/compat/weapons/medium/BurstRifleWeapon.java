@@ -50,7 +50,7 @@ public class BurstRifleWeapon extends WariumWeapon {
         abstractArrow.setPierceLevel((byte) 4);
 
         abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeY() - 0.1, livingEntity.getZ());
-        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 7.5F, (float) Mth.nextDouble(RandomSource.create(), 0.5, (double)0.5 + RecruitsWariumConfig.AIM_INACCURACY.get()));
+        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 7.5F, (float) Mth.nextDouble(RandomSource.create(), 0.5, (double)0.5 + RecruitsWariumConfig.BULLET_INACCURACY.get()));
 
         return abstractArrow;
     }
@@ -63,6 +63,11 @@ public class BurstRifleWeapon extends WariumWeapon {
     @Override
     public int getShotAmount() {
         return 3;
+    }
+
+    @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.MAX_BURST_RIFLE_INACCURACY.get();
     }
 
 }

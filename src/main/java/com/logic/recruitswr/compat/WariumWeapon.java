@@ -122,6 +122,10 @@ public abstract class WariumWeapon implements IWeapon {
 
     @Override
     public boolean isGun() {
+        return true;
+    }
+
+    public boolean isGrenade() {
         return false;
     }
 
@@ -172,6 +176,8 @@ public abstract class WariumWeapon implements IWeapon {
     public int attackRadius() {
         return 196;
     }
+
+    public abstract double getBaseWeaponInaccuracy();
 
     public void performRangedAttack(AbstractRecruitEntity recruit) {
         Item item = null;

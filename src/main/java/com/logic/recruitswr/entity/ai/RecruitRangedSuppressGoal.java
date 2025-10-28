@@ -1,7 +1,6 @@
 package com.logic.recruitswr.entity.ai;
 
 import com.logic.recruitswr.bridge.IBulletConsumer;
-import com.logic.recruitswr.bridge.ISuppressiveFire;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
@@ -18,9 +17,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
-import java.util.Random;
 
-public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> extends Goal {
+public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends Goal {
     private final T recruit;
     private final double speedModifier;
     private LivingEntity target;
@@ -30,7 +28,7 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
     private boolean consumeArrows;
     private WariumWeapon weapon;
 
-    public RecruitRangedWariumAttackGoal(T mob, double speedModifier, double stopRange) {
+    public RecruitRangedSuppressGoal(T mob, double speedModifier, double stopRange) {
         this.recruit = mob;
         this.speedModifier = speedModifier;
         this.stopRange = stopRange;
@@ -44,14 +42,14 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
             return false;
 
         if(((IBulletConsumer)recruit).isFleeing())
-            return false;
+            return  false;
 
         LivingEntity livingentity = this.recruit.getTarget();
 
         if (livingentity != null && livingentity.isAlive()) {
             boolean canSee = this.recruit.getSensing().hasLineOfSight(livingentity);
 
-            if (!canSee) {
+            if (canSee) {
                 return false;
             }
 
@@ -119,7 +117,6 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
                 ++this.seeTime;
             } else {
 
-
                 this.seeTime = 0;
             }
 
@@ -139,7 +136,7 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
 
             Vec3 targetPos = this.target.getEyePosition(1.0F);
 
-            double radiansInaccuracy = ((IBulletConsumer)this.recruit).calculateInaccuracy(targetPos, this.weapon.getBaseWeaponInaccuracy());
+            double radiansInaccuracy = ((IBulletConsumer)this.recruit).calculateInaccuracy(targetPos, this.weapon.getBaseWeaponInaccuracy() + RecruitsWariumConfig.SUPPRESSION_INACCURACY.get());
 
             Vec3 lookTarget = ((IBulletConsumer)this.recruit).handleInaccuracy(this.recruit.getEyePosition(), targetPos, radiansInaccuracy);
 

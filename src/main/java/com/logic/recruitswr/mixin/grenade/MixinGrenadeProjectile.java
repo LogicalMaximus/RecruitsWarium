@@ -1,7 +1,10 @@
 package com.logic.recruitswr.mixin.grenade;
 
+import com.logic.recruitswr.bridge.IAmmo;
+import com.logic.recruitswr.bridge.IGrenade;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import net.mcreator.crustychunks.entity.GrenadeProjectileEntity;
+import net.mcreator.crustychunks.init.CrustyChunksModEntities;
 import net.mcreator.crustychunks.procedures.GrenadeProjectileWhileProjectileFlyingTickProcedure;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.AbstractArrow;

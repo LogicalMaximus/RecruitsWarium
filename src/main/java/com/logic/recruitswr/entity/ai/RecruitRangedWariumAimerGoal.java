@@ -81,11 +81,7 @@ public class RecruitRangedWariumAimerGoal<T extends AbstractRecruitEntity> exten
             BlockEntity blockEntity = this.recruit.level().getBlockEntity(aimerPos);
 
             if(blockEntity instanceof AimerNodeBlockEntity nodeBlockEntity) {
-                List<BlockEntity> nodeTriggers = this.getAimerNodesAroundPos(aimerPos, RecruitsWariumConfig.AIMER_NODE_RADIUS.get());
-
-                for(BlockEntity node : nodeTriggers) {
-                    calculatePitchAndYaw(node);
-                }
+                calculatePitchAndYaw(blockEntity);
 
                 aimerItem.onEntitySwing(itemStack, this.recruit);
             }
@@ -98,35 +94,15 @@ public class RecruitRangedWariumAimerGoal<T extends AbstractRecruitEntity> exten
         Vec3 targetPos = this.target.getEyePosition();
         BlockPos triggerPos = node.getBlockPos();
 
-        double dx = targetPos.x - triggerPos.getX();
-        double dy = targetPos.y - triggerPos.getY();
-        double dz = targetPos.z - triggerPos.getZ();
 
-        float yaw = (float) Math.atan(dy/dx);
+        Vec3 direction = new Vec3(targetPos.x - triggerPos.getX(), targetPos.y - triggerPos.getY(), targetPos.z - triggerPos.getZ()).normalize();
 
-        float pitch = (float) Math.atan(Math.sqrt(dx * dx + dy * dy)/dz);
+        double yaw = Math.atan2(direction.x, direction.z);
+        double pitch = Math.asin(direction.y);
 
+        this.recruit.getMainHandItem().getOrCreateTag().putDouble("Pitch", pitch);
+        this.recruit.getMainHandItem().getOrCreateTag().putDouble("Yaw", yaw);
         node.getPersistentData().putDouble("Pitch", pitch);
         node.getPersistentData().putDouble("Yaw", yaw);
-    }
-
-    private List<BlockEntity> getAimerNodesAroundPos(BlockPos pos, int radius) {
-        List<BlockEntity> nodes = new ArrayList<>();
-
-        for (int x = (int) -radius; x <= radius; x++) {
-            for (int z = (int) -radius; z <= radius; z++) {
-                for (int y = (int) -radius; y <= radius; y++) { // Check around eye height
-                    BlockPos blockPos = pos.offset(x, y, z);
-
-                    BlockEntity blockEntity = this.recruit.level().getBlockEntity(blockPos);
-
-                    if(blockEntity instanceof NodeTriggerBlockEntity) {
-                        nodes.add(blockEntity);
-                    }
-                }
-            }
-        }
-
-        return nodes;
     }
 }

@@ -1,5 +1,6 @@
 package com.logic.recruitswr.mixin.client;
 
+import com.logic.recruitswr.bridge.IBulletConsumer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.talhanation.recruits.client.models.RecruitVillagerModel;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
@@ -7,6 +8,7 @@ import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.Pose;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

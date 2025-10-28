@@ -48,7 +48,7 @@ public class FlameThrowerWeapon extends WariumWeapon {
         abstractArrow.setPierceLevel((byte) 4);
 
         abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeY() - 0.1, livingEntity.getZ());
-        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, (float) Mth.nextDouble(RandomSource.create(), 1.4, (double)1.5F), (float) Mth.nextDouble(RandomSource.create(), 2.0, (double)2.0 + RecruitsWariumConfig.AIM_INACCURACY.get()));
+        abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, (float) Mth.nextDouble(RandomSource.create(), 1.4, (double)1.5F), (float) Mth.nextDouble(RandomSource.create(), 2.0, (double)2.0 + RecruitsWariumConfig.BULLET_INACCURACY.get()));
 
         return abstractArrow;
     }
@@ -75,6 +75,11 @@ public class FlameThrowerWeapon extends WariumWeapon {
     @Override
     public int attackRadius() {
         return 12;
+    }
+
+    @Override
+    public double getBaseWeaponInaccuracy() {
+        return RecruitsWariumConfig.FLAME_THROWER_INACCURACY.get();
     }
 
 }
