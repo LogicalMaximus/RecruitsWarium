@@ -62,14 +62,12 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         this.goalSelector.addGoal(1, new RecruitPanicGoal(((AbstractRecruitEntity) (Object)this), 1.35));
         this.goalSelector.addGoal(1, new RecruitAvoidEntityGoal<>(this, LivingEntity.class, (livingEntity -> this.getFollowState() == 0 && !this.getShouldMovePos() && !this.getShouldFollow() && this.getMainHandItem() != null && RecruitsWariumUtils.isWariumGun(this.getMainHandItem().getItem()) && this.distanceTo(livingEntity) < 16), 64.0F, 1.25D, 1.4D, this::shouldAttack));
         this.goalSelector.addGoal(2, new RecruitsFindCoverFromTargetGoal<>(((AbstractRecruitEntity) (Object)this), 1.25));
-        this.goalSelector.addGoal(2, new RecruitFindCoverFromProjectilesGoal<>(((AbstractRecruitEntity) (Object)this), 1.25));
         this.goalSelector.addGoal(2, new RecruitFleeGoal(((AbstractRecruitEntity) (Object)this)));
         this.goalSelector.addGoal(2, new RecruitsChangePoseGoal<>(((AbstractRecruitEntity) (Object)this)));
         this.goalSelector.addGoal(3, new RecruitRangedSuppressGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  1.0));
         this.goalSelector.addGoal(3, new RecruitRangedWariumAttackGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  1.0));
         this.goalSelector.addGoal(3, new RecruitThrowGrenadeGoal<>(((AbstractRecruitEntity) (Object)this)));
         this.goalSelector.addGoal(3, new RecruitRangedWariumAimerGoal<>(((AbstractRecruitEntity) (Object)this)));
-
     }
 
     @Inject(method = "defineSynchedData", at =@At("TAIL"))
@@ -309,7 +307,7 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         double pitchOffset = (random.nextDouble() * 2.0 - 1.0) * inaccuracyRadians;
 
         double yaw = Math.atan2(direction.z, direction.x);
-        double pitch = Math.asin(-direction.y);
+        double pitch = Math.asin(direction.y);
 
         yaw += yawOffset;
         pitch += pitchOffset;

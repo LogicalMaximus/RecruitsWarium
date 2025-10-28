@@ -172,7 +172,9 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
         super.tick();
     }
 
-
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
 
     private boolean canAttackMovePos() {
         LivingEntity target = this.recruit.getTarget();

@@ -31,6 +31,10 @@ public class RecruitPanicGoal extends Goal {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
     public boolean canUse() {
         if (!this.shouldPanic()) {
             return false;

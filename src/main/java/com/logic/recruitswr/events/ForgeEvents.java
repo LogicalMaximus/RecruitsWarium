@@ -26,7 +26,7 @@ public class ForgeEvents {
 
         if(owner instanceof LivingEntity lv) {
             for(AbstractRecruitEntity recruit : recruits) {
-                if(recruit.canAttack(lv)) {
+                if(recruit.canAttack(lv) && recruit.shouldAttack(lv)) {
                     recruit.setMoral(recruit.getMorale() - RecruitsWariumConfig.MORALE_SUPPRESSION_LOSS.get());
                 }
             }

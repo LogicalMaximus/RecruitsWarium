@@ -61,11 +61,6 @@ public class BurstRifleWeapon extends WariumWeapon {
     }
 
     @Override
-    public int getShotAmount() {
-        return 3;
-    }
-
-    @Override
     public double getBaseWeaponInaccuracy() {
         return RecruitsWariumConfig.MAX_BURST_RIFLE_INACCURACY.get();
     }

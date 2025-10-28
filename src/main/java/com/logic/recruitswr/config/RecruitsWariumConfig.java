@@ -341,7 +341,7 @@ public class RecruitsWariumConfig {
 
         RECRUIT_POSE_CHANCE = BUILDER.comment("\n The Chance At Which A Recruit Changes It's Pose \n\t(takes effect after restart)").define("RecruitPoseChance", 0.1F);
 
-        RECRUIT_COVER_RADIUS = BUILDER.comment("\nThe Radius At At Which Recruits Will Look For Cover (Can Be CPU Intensive When Set Too High) \n\t(takes effect after restart)").define("RecruitCoverRadius", 8);
+        RECRUIT_COVER_RADIUS = BUILDER.comment("\nThe Radius At At Which Recruits Will Look For Cover (Can Be CPU Intensive When Set Too High) \n\t(takes effect after restart)").define("RecruitCoverRadius", 16);
 
         REALISTIC_LOOK_CONTROL = BUILDER.comment("\nOption For Recruits To Use Look Control Rather Than The LookAt Method (Warning: This Gives Them Really Bad Aim) \n\t(takes effect after restart)").define("RealisticLookControl", false);
 

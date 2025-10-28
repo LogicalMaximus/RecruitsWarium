@@ -70,6 +70,10 @@ public class RecruitWariumStrategicFire extends Goal {
         this.bowman.clearArrowsPos();
     }
 
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
     public void tick() {
         attackIntervalMax = this.weapon.getAttackCooldown() + RecruitsWariumConfig.ADDITIONAL_SHOOT_DELAY.get();
         attackIntervalMin = this.weapon.getAttackCooldown();

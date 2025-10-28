@@ -62,6 +62,10 @@ public class RecruitRangedWariumAimerGoal<T extends AbstractRecruitEntity> exten
         super.start();
     }
 
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
     @Override
     public void stop() {
         this.recruit.setAggressive(false);

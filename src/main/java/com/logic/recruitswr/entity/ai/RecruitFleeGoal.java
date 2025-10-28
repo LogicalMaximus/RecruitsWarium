@@ -18,6 +18,10 @@ public class RecruitFleeGoal extends Goal {
         return true;
     }
 
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
     @Override
     public void start() {
         if(!((IBulletConsumer)this.mob).isFleeing()) {

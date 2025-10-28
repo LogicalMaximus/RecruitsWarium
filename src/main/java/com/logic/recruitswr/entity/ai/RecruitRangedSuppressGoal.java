@@ -13,6 +13,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +39,10 @@ public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends
         this.consumeArrows = (Boolean) RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get();
     }
 
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
     @Override
     public boolean canUse() {
         if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !((IBulletConsumer)recruit).recruits_warium$hasAmmo())
@@ -52,6 +59,9 @@ public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends
             if (canSee) {
                 return false;
             }
+
+            if(this.isLineOfFireBlocked(livingentity.getEyePosition()))
+                return false;
 
             if(isHoldingGun(this.recruit)) {
                 this.target = livingentity;
@@ -223,4 +233,19 @@ public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends
 
     }
 
+    private boolean isLineOfFireBlocked(Vec3 targetPos) {
+        Vec3 eye = this.recruit.getEyePosition();
+        Level level = this.recruit.level();
+
+        ClipContext context = new ClipContext(eye, targetPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.recruit);
+        HitResult result = level.clip(context);
+
+        if (result.getType() == HitResult.Type.BLOCK) {
+            double hitDist = result.getLocation().distanceTo(eye);
+            double totalDist = targetPos.distanceTo(eye);
+            return hitDist < totalDist * 0.2;
+        }
+
+        return false;
+    }
 }
