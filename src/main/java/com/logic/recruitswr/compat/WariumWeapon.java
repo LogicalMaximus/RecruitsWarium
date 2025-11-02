@@ -173,8 +173,20 @@ public abstract class WariumWeapon implements IWeapon {
         return 1;
     }
 
+    public boolean isSecondary() {
+        return false;
+    }
+
     public int attackRadius() {
-        return 196;
+        return 256;
+    }
+
+    public boolean isAntiVehicle() {
+        return false;
+    }
+
+    public boolean isIndirectFire() {
+        return false;
     }
 
     public abstract double getBaseWeaponInaccuracy();

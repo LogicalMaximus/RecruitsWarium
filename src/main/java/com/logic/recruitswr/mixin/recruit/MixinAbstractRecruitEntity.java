@@ -2,6 +2,7 @@ package com.logic.recruitswr.mixin.recruit;
 
 import com.google.common.collect.ImmutableMap;
 import com.logic.recruitswr.bridge.IBulletConsumer;
+import com.logic.recruitswr.bridge.IGrenade;
 import com.logic.recruitswr.bridge.ISuppressiveFire;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.*;
@@ -59,12 +61,14 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
 
     @Inject(method = "registerGoals", at = @At("TAIL"))
     private void registerGoals(CallbackInfo ci) {
-        this.goalSelector.addGoal(1, new RecruitPanicGoal(((AbstractRecruitEntity) (Object)this), 1.35));
-        this.goalSelector.addGoal(1, new RecruitAvoidEntityGoal<>(this, LivingEntity.class, (livingEntity -> this.getFollowState() == 0 && !this.getShouldMovePos() && !this.getShouldFollow() && this.getMainHandItem() != null && RecruitsWariumUtils.isWariumGun(this.getMainHandItem().getItem()) && this.distanceTo(livingEntity) < 16), 64.0F, 1.25D, 1.4D, this::shouldAttack));
-        this.goalSelector.addGoal(2, new RecruitsFindCoverFromTargetGoal<>(((AbstractRecruitEntity) (Object)this), 1.25));
+        this.goalSelector.addGoal(1, new RecruitPanicGoal(((AbstractRecruitEntity) (Object)this), 1.25));
+        this.goalSelector.addGoal(1, new FleeGrenade(((AbstractRecruitEntity) (Object)this)));
+        this.goalSelector.addGoal(1, new RecruitAvoidEntityGoal<>(this, LivingEntity.class, (livingEntity -> this.getFollowState() == 0 && !this.getShouldMovePos() && !this.getShouldFollow() && this.getMainHandItem() != null && RecruitsWariumUtils.isWariumGun(this.getMainHandItem().getItem()) && this.distanceTo(livingEntity) < 16), 64.0F, 1.15D, 1.22D, this::shouldAttack));
+        this.goalSelector.addGoal(2, new RecruitsFindCoverFromTargetGoal<>(((AbstractRecruitEntity) (Object)this), 1.15));
         this.goalSelector.addGoal(2, new RecruitFleeGoal(((AbstractRecruitEntity) (Object)this)));
+        this.goalSelector.addGoal(2, new RecruitWeaponSwitch<>(((AbstractRecruitEntity) (Object)this)));
         this.goalSelector.addGoal(2, new RecruitsChangePoseGoal<>(((AbstractRecruitEntity) (Object)this)));
-        this.goalSelector.addGoal(3, new RecruitRangedSuppressGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  1.0));
+        this.goalSelector.addGoal(3, new RecruitRangedSuppressGoal<>(((AbstractRecruitEntity) (Object)this), 0.7,  1.0));
         this.goalSelector.addGoal(3, new RecruitRangedWariumAttackGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  1.0));
         this.goalSelector.addGoal(3, new RecruitThrowGrenadeGoal<>(((AbstractRecruitEntity) (Object)this)));
         this.goalSelector.addGoal(3, new RecruitRangedWariumAimerGoal<>(((AbstractRecruitEntity) (Object)this)));
@@ -121,10 +125,8 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
     @Override
     public void changePose() {
         if(this.getPose() == Pose.STANDING) {
-            this.setIsFleeing(false);
             this.setPose(Pose.CROUCHING);
         } else {
-            this.setIsFleeing(false);
             this.setPose(Pose.STANDING);
         }
     }
@@ -217,13 +219,36 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
 
             Item item = this.getMainHandItem().getItem();
 
+
             if (RecruitsWariumUtils.isWariumGun(item)) {
                 WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item);
 
                 if(weapon.getAmmo().contains(itemstack.getItem())) {
-                    ItemStack equipment = itemstack.copy();
-                    this.inventory.addItem(equipment);
-                    itemstack.shrink(equipment.getCount());
+                    for(int j = 0; j < this.inventory.getContainerSize(); j++) {
+                        ItemStack item1 = this.inventory.getItem(j);
+
+                        if(item1== ItemStack.EMPTY) {
+                            ItemStack equipment = itemstack.copy();
+                            this.inventory.setItem(j, equipment);
+                            itemstack.shrink(equipment.getCount());
+                            break;
+                        }
+                    }
+                }
+
+                if(itemstack.getItem() instanceof IGrenade) {
+                    if(this.canTakeGrenades()) {
+                        for(int j = 0; j < this.inventory.getContainerSize(); j++) {
+                            ItemStack item1 = this.inventory.getItem(j);
+
+                            if(item1== ItemStack.EMPTY) {
+                                ItemStack equipment = itemstack.copy();
+                                this.inventory.setItem(j, equipment);
+                                itemstack.shrink(equipment.getCount());
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -264,6 +289,8 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
     @Shadow public abstract boolean canAttack(@NotNull LivingEntity target);
 
     @Shadow public abstract int getFollowState();
+
+    @Shadow public abstract void initSpawn();
 
     @Inject(method = "hurt", at = @At("HEAD"))
     public void hurt(DamageSource dmg, float amt, CallbackInfoReturnable<Boolean> cir) {
@@ -362,6 +389,19 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         }
 
         return inaccuracyRadians;
+    }
+
+    @Unique
+    public boolean canTakeGrenades() {
+        int count = 0;
+
+        for(ItemStack itemstack : this.inventory.items) {
+            if (itemstack.getItem() instanceof IGrenade) {
+                count += itemstack.getCount();
+            }
+        }
+
+        return count < 3;
     }
 
     static {

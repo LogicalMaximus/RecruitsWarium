@@ -100,5 +100,10 @@ public class RecruitsWariumUtils {
         GUNS.add(CrustyChunksModItems.BREECH_RIFLE.get());
         GUNS.add(CrustyChunksModItems.FLAME_THROWER_ANIMATED.get());
         GUNS.add(CrustyChunksModItems.ARMOR_PEELER_ANIMATED.get());
+        GUNS.add(CrustyChunksModItems.ARMOR_PEELER_ANIMATED.get());
+        GUNS.add(CrustyChunksModItems.GRENADE_LAUNCHER.get());
+        GUNS.add(CrustyChunksModItems.GRENADE.get());
+        GUNS.add(CrustyChunksModItems.INCENDIARY_GRENADE.get());
+        GUNS.add(CrustyChunksModItems.SMOKE_GRENADE.get());
      }
 }

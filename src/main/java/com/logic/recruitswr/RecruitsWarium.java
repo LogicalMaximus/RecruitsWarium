@@ -4,6 +4,7 @@ import com.logic.recruitswr.commands.MercenaryPatrolSpawnCommand;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.events.ForgeEvents;
 import com.logic.recruitswr.events.MercenaryPatrolSpawner;
+import com.logic.recruitswr.registries.ModEntities;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -29,6 +30,8 @@ public class RecruitsWarium {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, RecruitsWariumConfig.SPEC, "recruit-warium-server.toml");
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        ModEntities.init(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
 

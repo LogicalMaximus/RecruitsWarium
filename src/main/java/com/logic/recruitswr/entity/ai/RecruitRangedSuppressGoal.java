@@ -11,6 +11,7 @@ import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -141,7 +142,15 @@ public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends
             } else if (this.recruit.getShouldHoldPos() && this.recruit.getHoldPos() != null) {
                 this.handleHoldPos(this.recruit.getHoldPos(), inRange, isFar, isClose);
             } else {
-                //this.handleWander(inRange, isFar, isClose);
+                if(this.target instanceof Mob mobAttacker) {
+                    if(!mobAttacker.getSensing().hasLineOfSight(this.recruit)) {
+                        this.recruit.getNavigation().moveTo(target, this.speedModifier);
+                    }
+                } else {
+                    if (!this.target.hasLineOfSight(this.recruit)) {
+                        this.recruit.getNavigation().moveTo(target, this.speedModifier);
+                    }
+                }
             }
 
             Vec3 targetPos = this.target.getEyePosition(1.0F);

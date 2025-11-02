@@ -39,7 +39,7 @@ public class RecruitThrowGrenadeGoal<T extends AbstractRecruitEntity> extends Go
         if(this.target == null)
             return false;
 
-        if(this.recruit.distanceToSqr(this.target) < 16)
+        if(this.recruit.distanceToSqr(this.target) < 24)
             return false;
 
         this.itemSlot = this.getAmmo(this.recruit);

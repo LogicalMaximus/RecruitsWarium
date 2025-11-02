@@ -1,5 +1,6 @@
 package com.logic.recruitswr.mixin.recruit;
 
+import com.logic.recruitswr.bridge.IGrenade;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
@@ -32,6 +33,10 @@ public abstract class MixinAbstractInventoryEntity extends AsyncPathfinderMob {
             if(weapon.getAmmo().contains(itemStack.getItem())) {
                 cir.setReturnValue(true);
             }
+        }
+
+        if(itemStack.getItem() instanceof IGrenade) {
+            cir.setReturnValue(true);
         }
     }
 

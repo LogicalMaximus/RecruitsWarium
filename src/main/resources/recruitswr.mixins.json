@@ -6,7 +6,9 @@
   "refmap": "recruitswr.refmap.json",
   "mixins": [
     "MixinRecruitEvents",
+    "MixinServerLevel",
     "ai.MixinRecruitUpkeepPosGoal",
+    "block.MixinLandMineBlock",
     "bullets.extra_large.MixinExtraLargeBulletItem",
     "bullets.flame.MixinPetroliumItem",
     "bullets.large.MixinAPLargeBulletItem",
@@ -27,6 +29,8 @@
     "grenade.item.MixinGrenadeItem",
     "grenade.item.MixinIncediaryGrenadeItem",
     "grenade.item.MixinSmokeGrenadeItem",
+    "grenade.item.mortar.MixinMortarShellItem",
+    "grenade.item.mortar.MixinSmokeMortarShellItem",
     "prodecure.MixinBulletHitProcdure",
     "prodecure.MixinGeneralArmorBypassProcedure",
     "prodecure.MixinGrenadeHitProcedure",

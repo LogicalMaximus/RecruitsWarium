@@ -16,6 +16,10 @@ public class RecruitAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityG
         this.walkSpeedModifier = p_25044_;
     }
 
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
     public void tick() {
         this.pathNav.moveTo(this.path, this.walkSpeedModifier);
 

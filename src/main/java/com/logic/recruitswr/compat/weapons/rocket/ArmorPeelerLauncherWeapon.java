@@ -52,6 +52,14 @@ public class ArmorPeelerLauncherWeapon extends WariumWeapon {
         return RecruitsWariumConfig.ARMOR_PEELER_INACCURACY.get();
     }
 
+    public boolean isAntiVehicle() {
+        return true;
+    }
+
+    public boolean isSecondary() {
+        return true;
+    }
+
     @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_ARMOR_PEELER_COOLDOWN.get();

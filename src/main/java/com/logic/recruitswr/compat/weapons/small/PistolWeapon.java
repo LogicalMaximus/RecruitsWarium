@@ -21,6 +21,11 @@ public class PistolWeapon extends WariumWeapon {
     }
 
     @Override
+    public boolean isSecondary() {
+        return true;
+    }
+
+    @Override
     public int getMaxAmmo() {
         return RecruitsWariumConfig.MAX_PISTOL_AMMO.get();
     }

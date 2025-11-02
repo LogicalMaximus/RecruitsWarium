@@ -22,6 +22,11 @@ public class StealthPistolWeapon extends WariumWeapon {
     }
 
     @Override
+    public boolean isSecondary() {
+        return true;
+    }
+
+    @Override
     public int getMaxAmmo() {
         return RecruitsWariumConfig.MAX_STEALTH_PISTOL_AMMO.get();
     }

@@ -70,6 +70,10 @@ public class RecruitsFindCoverFromTargetGoal<T extends AbstractRecruitEntity> ex
                         Entity owner = optionalAbstractArrow.get().getOwner();
 
                         if(owner instanceof LivingEntity lvOwner) {
+                            if(this.mob.getTarget() == null) {
+                                this.mob.setTarget(lvOwner);
+                            }
+
                             this.attacker = lvOwner;
                         }
                     }

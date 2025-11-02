@@ -39,11 +39,13 @@ public class RecruitsChangePoseGoal<T extends AbstractRecruitEntity> extends Goa
     @Override
     public void tick() {
         if(target != null) {
-            if(this.recruit.getRandom().nextFloat() < RecruitsWariumConfig.RECRUIT_POSE_CHANCE.get()) {
-                if(((IBulletConsumer)this.recruit).getPoseCooldown() <= 0) {
-                    ((IBulletConsumer)this.recruit).changePose();
+            if(this.recruit.distanceTo(this.target) >= 16) {
+                if(this.recruit.getRandom().nextFloat() < RecruitsWariumConfig.RECRUIT_POSE_CHANCE.get()) {
+                    if(((IBulletConsumer)this.recruit).getPoseCooldown() <= 0) {
+                        ((IBulletConsumer)this.recruit).changePose();
 
-                    ((IBulletConsumer)this.recruit).setPoseCooldown(RecruitsWariumConfig.RECRUIT_POSE_COOLDOWN.get());
+                        ((IBulletConsumer)this.recruit).setPoseCooldown(RecruitsWariumConfig.RECRUIT_POSE_COOLDOWN.get());
+                    }
                 }
             }
         } else {

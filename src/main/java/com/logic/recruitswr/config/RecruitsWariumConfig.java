@@ -156,6 +156,14 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Double> ARMOR_PEELER_INACCURACY;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_GRENADE_LAUNCHER_AMMO;
+
+    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_GRENADE_LAUNCHER_COOLDOWN;
+
+    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_GRENADE_LAUNCHER_RELOAD;
+
+    public static final ForgeConfigSpec.ConfigValue<Double> GRENADE_LAUNCHER_INACCURACY;
+
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_FLAME_THROWER_AMMO;
 
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_FLAME_THROWER_COOLDOWN;
@@ -173,6 +181,8 @@ public class RecruitsWariumConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND;
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_RUN_TO_COVER;
+
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_WEAPON_SWITCH;
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUITS_CHANGE_POSE;
 
@@ -221,7 +231,7 @@ public class RecruitsWariumConfig {
     static {
         BUILDER.comment("Recruit Warium Server Config").push("Weapon Values");
 
-        GRENADE_COOLDOWN = BUILDER.comment("\nThe Cooldown For All Grenades \n\t(takes effect after restart)").define("GrenadeThrowCooldown", 80);
+        GRENADE_COOLDOWN = BUILDER.comment("\nThe Cooldown For All Grenades \n\t(takes effect after restart)").define("GrenadeThrowCooldown", 240);
 
         MAX_AUTOMATIC_RIFLE_AMMO = BUILDER.comment("\nThe Amount Of Ammo For Automatic Rifle With The Recruits \n\t(takes effect after restart)").define("MaxAutomaticRifleAmmo", 30);
         MAX_AUTOMATIC_RIFLE_COOLDOWN = BUILDER.comment("\nThe Cooldown For Automatic Rifle With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxAutomaticRifleCooldown", 4);
@@ -313,6 +323,11 @@ public class RecruitsWariumConfig {
         MAX_ARMOR_PEELER_RELOAD = BUILDER.comment("\nThe Reload Time For The Armor Peeler Launcher With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxArmorPeelerReload", 120);
         ARMOR_PEELER_INACCURACY = BUILDER.comment("\nThe Base Inaccuracy For The Armor Peeler Launcher For The Recruits In Radians\n\t(takes effect after restart)").define("ArmorPeelerInaccuracy", 0.5);
 
+        MAX_GRENADE_LAUNCHER_AMMO = BUILDER.comment("\nThe Amount Of Ammo For The Grenade Launcher With The Recruits \n\t(takes effect after restart)").define("MaxGrenadeLauncherAmmo", 1);
+        MAX_GRENADE_LAUNCHER_COOLDOWN = BUILDER.comment("\nThe Cooldown For The Grenade Launcher With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxGrenadeLauncherCooldown", 60);
+        MAX_GRENADE_LAUNCHER_RELOAD = BUILDER.comment("\nThe Reload Time For The Grenade Launcher With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxGrenadeLauncherReload", 120);
+        GRENADE_LAUNCHER_INACCURACY = BUILDER.comment("\nThe Base Inaccuracy For The Grenade Launcher For The Recruits In Radians\n\t(takes effect after restart)").define("GrenadeLauncherInaccuracy", 0.8);
+
         MAX_FLAME_THROWER_AMMO = BUILDER.comment("\nThe Amount Of Ammo For The Flame Thrower With The Recruits \n\t(takes effect after restart)").define("MaxFlameThrowerAmmo", 1000);
         MAX_FLAME_THROWER_COOLDOWN = BUILDER.comment("\nThe Cooldown For The Flame Thrower With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxFlameThrowerCooldown", 1);
         MAX_FLAME_THROWER_RELOAD = BUILDER.comment("\nThe Reload Time For The Flame Thrower With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxFlameThrowerReload", 120);
@@ -348,6 +363,8 @@ public class RecruitsWariumConfig {
         RECRUIT_GRENADE_THROW_CHANCE = BUILDER.comment("\n The Chance That A Recruit Will Throw A Grenade When They Have No Sight Of Target \n\t(takes effect after restart)").define("GrenadeThrowChance", 0.10);
 
         RECRUIT_GRENADE_THROW_DELAY = BUILDER.comment("\nThe Amount Of Ticks It Takes For A Recruit To Throw A Grenade \n\t(takes effect after restart)").define("RecruitGrenadeThrowDelay", 30);
+
+        SHOULD_RECRUITS_WEAPON_SWITCH = BUILDER.comment("\nWhether Recruits Should Switch Weapons Based On The Target And Weapon Stats \n\t(takes effect after restart)").define("ShouldRecruitsWeaponSwitch", true);
 
         BUILDER.pop();
         BUILDER.comment("Recruits Behaviour").push("Morale");
