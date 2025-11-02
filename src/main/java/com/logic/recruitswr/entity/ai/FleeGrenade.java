@@ -56,7 +56,11 @@ public class FleeGrenade extends Goal {
             this.runFromEntity = optionalProjectile.get();
 
             Vec3 vec3 = DefaultRandomPos.getPosAway(this.entity, 20, 7, this.runFromEntity.position());
-            this.path = this.entity.getNavigation().createPath(vec3.x, vec3.y, vec3.z, 1);
+
+            if(vec3 != null) {
+                this.path = this.entity.getNavigation().createPath(vec3.x, vec3.y, vec3.z, 1);
+            }
+
         } else {
             this.runFromEntity = null;
             this.setFleeing(false);
@@ -72,7 +76,10 @@ public class FleeGrenade extends Goal {
             }
             else {
                 Vec3 vec3 = DefaultRandomPos.getPosAway(this.entity, 20, 7, this.runFromEntity.position());
+
+                if(vec3 != null) {
                 this.path = this.entity.getNavigation().createPath(vec3.x, vec3.y, vec3.z, 1);
+                }
             }
         }
         else {
