@@ -39,7 +39,8 @@
     "recruit.MixinAbstractInventoryEntity",
     "recruit.MixinAbstractRecruitEntity",
     "recruit.MixinBowmanEntity",
-    "recruit.MixinCrossBowmanEntity"
+    "recruit.MixinCrossBowmanEntity",
+    "recruit.MixinCommanderEntity"
   ],
   "client": [
     "client.MixinRecruitHumanRenderer",

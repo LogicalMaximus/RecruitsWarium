@@ -35,7 +35,7 @@ public class GrenadeWeapon extends AbstractGrenadeWeapon {
         double d3 = (double) Mth.sqrt((float)(d0 * d0 + d2 * d2));
         double angle = RecruitsWariumUtils.getAngleDistanceModifier(distance, 47, 4) + RecruitsWariumUtils.getAngleHeightModifier(distance, heightDiff, 1.0) / 100.0;
         float force = 1.9F + RecruitsWariumUtils.getForceDistanceModifier(distance, 1.899999976158142);
-        float accuracy = 0.35F;
+        float accuracy = 0.15F;
 
         livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(d0, d1 + d3 * angle, d2));
 
@@ -47,5 +47,9 @@ public class GrenadeWeapon extends AbstractGrenadeWeapon {
     @Override
     public AbstractArrow shootArrow(LivingEntity livingEntity, AbstractArrow abstractArrow, double v, double v1, double v2) {
         return null;
+    }
+
+    public boolean isExplosive() {
+        return true;
     }
 }

@@ -17,7 +17,7 @@ public abstract class MixinSmokeMortarShellItem extends Item implements IGrenade
 
     @Override
     public EntityType<? extends AbstractArrow> getProjecile() {
-        return CrustyChunksModEntities.MORTAR_PROJECTILE.get();
+        return CrustyChunksModEntities.SMOKE_MORTAR_PROJECTILE.get();
     }
 
     @Override

@@ -337,7 +337,7 @@ public class MercenaryPatrolSpawn {
         patrolLeader.setHunger(100.0F);
         patrolLeader.setMoral(100.0F);
         patrolLeader.setCost(55);
-        patrolLeader.setState(2);
+        patrolLeader.setAggroState(2);
         patrolLeader.setXp(random.nextInt(200));
         patrolLeader.setCustomName(Component.literal(name));
         patrolLeader.despawnTimer = (Integer)RecruitsServerConfig.RecruitPatrolDespawnTime.get() * 20 * 60;
@@ -359,7 +359,7 @@ public class MercenaryPatrolSpawn {
         recruitEntity.setHunger(80.0F);
         recruitEntity.setMoral(65.0F);
         recruitEntity.setCost(9);
-        recruitEntity.setState(2);
+        recruitEntity.setAggroState(2);
         recruitEntity.setProtectUUID(Optional.of(patrolLeader.getUUID()));
         recruitEntity.setShouldProtect(true);
         recruitEntity.setXp(random.nextInt(80));
@@ -380,7 +380,7 @@ public class MercenaryPatrolSpawn {
         bowman.setHunger(80.0F);
         bowman.setMoral(65.0F);
         bowman.setCost(16);
-        bowman.setState(2);
+        bowman.setAggroState(2);
         bowman.setProtectUUID(Optional.of(patrolLeader.getUUID()));
         bowman.setShouldProtect(true);
         bowman.setXp(random.nextInt(120));
@@ -403,7 +403,7 @@ public class MercenaryPatrolSpawn {
         shieldmanEntity.setCost(12);
         shieldmanEntity.setProtectUUID(Optional.of(patrolLeader.getUUID()));
         shieldmanEntity.setShouldProtect(true);
-        shieldmanEntity.setState(2);
+        shieldmanEntity.setAggroState(2);
         shieldmanEntity.setXp(random.nextInt(120));
         shieldmanEntity.setCustomName(Component.literal(name));
         if (banner) {
@@ -431,7 +431,7 @@ public class MercenaryPatrolSpawn {
         horseman.setCost(30);
         horseman.setProtectUUID(Optional.of(patrolLeader.getUUID()));
         horseman.setShouldProtect(true);
-        horseman.setState(2);
+        horseman.setAggroState(2);
         horseman.setXp(random.nextInt(120));
         horseman.setCustomName(Component.literal(name));
         if (banner) {
@@ -461,7 +461,7 @@ public class MercenaryPatrolSpawn {
         nomad.setShouldProtect(true);
         nomad.setXp(random.nextInt(120));
         nomad.setCustomName(Component.literal(name));
-        nomad.setState(2);
+        nomad.setAggroState(2);
         setRecruitFood(nomad);
         world.addFreshEntity(nomad);
     }
@@ -480,7 +480,7 @@ public class MercenaryPatrolSpawn {
         crossBowman.setProtectUUID(Optional.of(patrolLeader.getUUID()));
         crossBowman.setShouldProtect(true);
         crossBowman.setXp(random.nextInt(120));
-        crossBowman.setState(2);
+        crossBowman.setAggroState(2);
         crossBowman.setCustomName(Component.literal("Mercenary"));
         setRecruitFood(crossBowman);
         world.addFreshEntity(crossBowman);
@@ -497,7 +497,7 @@ public class MercenaryPatrolSpawn {
         recruitEntity.addLevelBuffsForLevel(recruitEntity.getXpLevel());
         recruitEntity.setHunger(80.0F);
         recruitEntity.setMoral(65.0F);
-        recruitEntity.setState(2);
+        recruitEntity.setAggroState(2);
         recruitEntity.setCost(9);
         recruitEntity.setXp(random.nextInt(80));
         recruitEntity.setCustomName(Component.literal("Mercenary"));
@@ -505,8 +505,8 @@ public class MercenaryPatrolSpawn {
         world.addFreshEntity(recruitEntity);
     }
 
-    public static PatrolLeaderEntity createCompanionPatrolLeader(BlockPos upPos, ServerLevel world) {
-        PatrolLeaderEntity leader = (PatrolLeaderEntity)((EntityType)ModEntityTypes.PATROL_LEADER.get()).create(world);
+    public static CommanderEntity createCompanionPatrolLeader(BlockPos upPos, ServerLevel world) {
+        CommanderEntity leader = (CommanderEntity)((EntityType)ModEntityTypes.PATROL_LEADER.get()).create(world);
         leader.moveTo((double)upPos.getX() + (double)0.5F, (double)upPos.getY() + (double)0.5F, (double)upPos.getZ() + (double)0.5F, random.nextFloat() * 360.0F - 180.0F, 0.0F);
         leader.finalizeSpawn(world, world.getCurrentDifficultyAt(upPos), MobSpawnType.PATROL, (SpawnGroupData)null, (CompoundTag)null);
         AbstractRecruitEntity.applySpawnValues(leader);
@@ -519,13 +519,13 @@ public class MercenaryPatrolSpawn {
         leader.setMoral(65.0F);
         leader.setCost(50);
         leader.setXp(random.nextInt(120));
-        leader.setState(2);
+        leader.setAggroState(2);
         leader.setCustomName(Component.literal("Mercenary Leader"));
         return leader;
     }
 
     public static void spawnPatrol(BlockPos upPos, ServerLevel world) {
-        PatrolLeaderEntity leader = createCompanionPatrolLeader(upPos, world);
+        CommanderEntity leader = createCompanionPatrolLeader(upPos, world);
         createRecruit(world, upPos, leader);
         createRecruit(world, upPos, leader);
         createRecruit(world, upPos, leader);

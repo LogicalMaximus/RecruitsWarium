@@ -34,6 +34,9 @@ public class RecruitThrowGrenadeGoal<T extends AbstractRecruitEntity> extends Go
         if(!RecruitsWariumConfig.SHOULD_RECRUITS_THROW_GRENADES.get())
             return false;
 
+        if(!this.recruit.getShouldRanged())
+            return false;
+
         this.target = this.recruit.getTarget();
 
         if(this.target == null)

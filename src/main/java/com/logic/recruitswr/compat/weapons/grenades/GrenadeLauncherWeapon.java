@@ -4,17 +4,21 @@ import com.logic.recruitswr.compat.AmmoTypes;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
 import com.logic.recruitswr.utils.RecruitsWariumSoundUtils;
+import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.config.RecruitsServerConfig;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class GrenadeLauncherWeapon extends WariumWeapon {
@@ -59,6 +63,61 @@ public class GrenadeLauncherWeapon extends WariumWeapon {
 
     @Override
     public AbstractArrow shootArrow(LivingEntity livingEntity, AbstractArrow abstractArrow, double v, double v1, double v2) {
+        LivingEntity target = null;
+        boolean flag = false;
+
+        if(livingEntity instanceof Mob mob) {
+            target = mob.getTarget();
+
+            if(target != null) {
+                if(!mob.hasLineOfSight(target)) {
+                    flag = true;
+                }
+                else {
+                    flag = false;
+                }
+            }
+            else {
+                flag = false;
+            }
+
+        } else {
+            flag = false;
+        }
+
+        if(flag && target != null) {
+            abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeHeight() + 1, livingEntity.getZ());
+
+            double dx = target.getX() - livingEntity.getX();
+            double dz = target.getZ() - livingEntity.getZ();
+            double dy = target.getY() - abstractArrow.getY();
+
+            double horizontalDist = Math.sqrt(dx * dx + dz * dz);
+
+            double LOB_SCALE = 0.055;
+            double MAX_LOB = 1.2;
+            double MIN_RANGE = 6.0;
+
+            double lob = Math.min(horizontalDist * LOB_SCALE, MAX_LOB);
+
+            double yAim = dy + horizontalDist * lob;
+
+            livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(livingEntity.getX() + dx, abstractArrow.getY() + yAim, livingEntity.getZ() + dz));
+
+            abstractArrow.shoot(dx, yAim, dz, 1.9F, 0.5F);
+        }
+        else {
+            directFire(livingEntity, abstractArrow);
+        }
+
+        return abstractArrow;
+    }
+
+    public boolean isExplosive() {
+        return true;
+    }
+
+    private static void directFire(LivingEntity livingEntity, AbstractArrow abstractArrow) {
         abstractArrow.setOwner(livingEntity);
         abstractArrow.setBaseDamage((double)3.0F);
         abstractArrow.setKnockback(1);
@@ -67,8 +126,6 @@ public class GrenadeLauncherWeapon extends WariumWeapon {
 
         abstractArrow.setPos(livingEntity.getX(), livingEntity.getEyeY() - 0.1, livingEntity.getZ());
         abstractArrow.shoot(livingEntity.getLookAngle().x, livingEntity.getLookAngle().y, livingEntity.getLookAngle().z, 3.5F, (float) Mth.nextDouble(RandomSource.create(), 0.1, (double)0.1 + RecruitsWariumConfig.BULLET_INACCURACY.get()));
-
-        return abstractArrow;
     }
 
     @Override

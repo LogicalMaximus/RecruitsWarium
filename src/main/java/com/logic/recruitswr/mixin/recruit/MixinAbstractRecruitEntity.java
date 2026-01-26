@@ -13,21 +13,26 @@ import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.Main;
 import com.talhanation.recruits.compat.IWeapon;
 import com.talhanation.recruits.entities.*;
+import com.talhanation.recruits.entities.ai.async.AsyncManager;
+import com.talhanation.recruits.entities.ai.async.AsyncTaskWithCallback;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.*;
@@ -37,8 +42,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Mixin(AbstractRecruitEntity.class)
 public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity implements IBulletConsumer, ISuppressiveFire {
@@ -54,6 +62,12 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
 
     @Unique
     private int poseCooldown;
+
+    @Unique
+    private int weaponSwitchCooldown;
+
+    @Shadow(remap = false)
+    public TargetingConditions targetingConditions;
 
     public MixinAbstractRecruitEntity(EntityType<? extends AbstractInventoryEntity> entityType, Level world) {
         super(entityType, world);
@@ -72,6 +86,75 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         this.goalSelector.addGoal(3, new RecruitRangedWariumAttackGoal<>(((AbstractRecruitEntity) (Object)this), 1.0,  1.0));
         this.goalSelector.addGoal(3, new RecruitThrowGrenadeGoal<>(((AbstractRecruitEntity) (Object)this)));
         this.goalSelector.addGoal(3, new RecruitRangedWariumAimerGoal<>(((AbstractRecruitEntity) (Object)this)));
+    }
+
+    /**
+     * @author
+     * @reason
+     */
+    @Overwrite(remap = false)
+    private void searchForTargetsAsync(ServerLevel serverLevel) {
+        float targetRange;
+
+        Item item = this.getMainHandItem().getItem();
+
+        if(RecruitsWariumConfig.USE_WEAPON_RANGE_FOR_TARGETING.get() && RecruitsWariumUtils.isWariumGun(item)) {
+            targetRange = WariumWeapons.getWeaponFromItem(item).attackRadius();
+        } else {
+            targetRange = 40.0F;
+        }
+
+        AABB searchBox = this.getBoundingBox().inflate((double)targetRange);
+        List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox, (entity) -> entity != this);
+        Supplier<List<LivingEntity>> findTargetsTask = () -> {
+            List<LivingEntity> copy = new ArrayList(nearby);
+            copy.removeIf((potTarget) -> !this.targetingConditions.test(this, potTarget));
+            copy.sort(Comparator.comparingDouble((e) -> e.distanceToSqr(this)));
+            return copy.stream().limit(10L).toList();
+        };
+        Consumer<List<LivingEntity>> handleTargets = (targets) -> {
+            if (!targets.isEmpty()) {
+                this.setTarget((LivingEntity)targets.get(this.getRandom().nextInt(targets.size())));
+            }
+
+        };
+        AsyncManager.executor.execute(new AsyncTaskWithCallback(findTargetsTask, handleTargets, serverLevel));
+    }
+
+    /**
+     * @author
+     * @reason
+     */
+    @Overwrite(remap = false)
+    private void searchForTargetsSync(ServerLevel serverLevel) {
+        float targetRange;
+
+        Item item = this.getMainHandItem().getItem();
+
+        if(RecruitsWariumConfig.USE_WEAPON_RANGE_FOR_TARGETING.get() && RecruitsWariumUtils.isWariumGun(item)) {
+            targetRange = WariumWeapons.getWeaponFromItem(item).attackRadius();
+        } else {
+            targetRange = 40.0F;
+        }
+
+        AABB searchBox = this.getBoundingBox().inflate((double)targetRange);
+        List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox, (entity) -> entity != this);
+        nearby.removeIf((potTarget) -> !this.targetingConditions.test(this, potTarget));
+        nearby.sort(Comparator.comparingDouble((e) -> e.distanceToSqr(this)));
+        if (!nearby.isEmpty()) {
+            LivingEntity target = (LivingEntity)nearby.stream().limit(10L).toList().get(this.getRandom().nextInt(Math.min(10, nearby.size())));
+            this.setTarget(target);
+        }
+
+    }
+
+    @Overwrite(remap=false)
+    public double getMeleeStartRange() {
+        if(RecruitsWariumUtils.isWariumGun(this.getMainHandItem().getItem())) {
+            return (double)3.0F;
+        } else {
+            return 32;
+        }
     }
 
     @Inject(method = "defineSynchedData", at =@At("TAIL"))
@@ -159,10 +242,20 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         return poseCooldown;
     }
 
+    @Override
+    public void setWeaponSwitchCooldown(int weaponSwitchCooldown) {
+        this.weaponSwitchCooldown = weaponSwitchCooldown;
+    }
+
+    @Override
+    public int getWeaponSwitchCooldown() {
+        return weaponSwitchCooldown;
+    }
+
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick(CallbackInfo ci) {
         poseCooldown--;
-
+        weaponSwitchCooldown--;
     }
 
     @Override
@@ -219,15 +312,16 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
 
             Item item = this.getMainHandItem().getItem();
 
-
             if (RecruitsWariumUtils.isWariumGun(item)) {
                 WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item);
 
                 if(weapon.getAmmo().contains(itemstack.getItem())) {
                     for(int j = 0; j < this.inventory.getContainerSize(); j++) {
+                        if(j <= 5)continue;
+
                         ItemStack item1 = this.inventory.getItem(j);
 
-                        if(item1== ItemStack.EMPTY) {
+                        if(item1 == ItemStack.EMPTY) {
                             ItemStack equipment = itemstack.copy();
                             this.inventory.setItem(j, equipment);
                             itemstack.shrink(equipment.getCount());
@@ -236,18 +330,49 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
                     }
                 }
 
-                if(itemstack.getItem() instanceof IGrenade) {
-                    if(this.canTakeGrenades()) {
-                        for(int j = 0; j < this.inventory.getContainerSize(); j++) {
-                            ItemStack item1 = this.inventory.getItem(j);
 
-                            if(item1== ItemStack.EMPTY) {
+            }
+
+            if(itemstack.getItem() instanceof IGrenade) {
+                if(this.canTakeGrenades()) {
+                    for(int j = 0; j < this.inventory.getContainerSize(); j++) {
+                        if(j <= 5)continue;
+
+                        ItemStack item1 = this.inventory.getItem(j);
+
+                        if(item1 == ItemStack.EMPTY) {
+                            ItemStack equipment = itemstack.copy();
+                            this.inventory.setItem(j, equipment);
+                            itemstack.shrink(equipment.getCount());
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(int j = 0; j < this.inventory.getContainerSize(); j++) {
+                if(j <= 5)continue;
+
+                ItemStack item1 = this.inventory.getItem(j);
+
+                if(RecruitsWariumUtils.isWariumGun(item1.getItem())) {
+                    WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item1.getItem());
+
+                    if(weapon.getAmmo().contains(itemstack.getItem())) {
+                        for(int k = 0; k < this.inventory.getContainerSize(); k++) {
+                            if(k <= 5)continue;
+
+                            ItemStack item2 = this.inventory.getItem(k);
+
+                            if(item2 == ItemStack.EMPTY) {
                                 ItemStack equipment = itemstack.copy();
-                                this.inventory.setItem(j, equipment);
+                                this.inventory.setItem(k, equipment);
                                 itemstack.shrink(equipment.getCount());
                                 break;
                             }
                         }
+
+                        break;
                     }
                 }
             }

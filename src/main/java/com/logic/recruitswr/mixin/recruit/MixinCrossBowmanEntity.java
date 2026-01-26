@@ -51,10 +51,8 @@ public abstract class MixinCrossBowmanEntity extends AbstractRecruitEntity imple
         this.setCustomName(Component.literal("Crossbowman"));
         this.setCost((Integer) RecruitsServerConfig.CrossbowmanCost.get());
         this.setEquipment();
-        this.setDropEquipment();
         this.setRandomSpawnBonus();
         this.setPersistenceRequired();
-        this.setGroup(2);
         if ((Boolean)RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !RecruitsWariumUtils.isWariumGun(this.getMainHandItem().getItem())) {
             if (Main.isMusketModLoaded && IWeapon.isMusketModWeapon(this.getMainHandItem())) {
                 int i = this.getRandom().nextInt(32);

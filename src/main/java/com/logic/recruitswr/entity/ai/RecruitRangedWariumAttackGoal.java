@@ -43,6 +43,9 @@ public class RecruitRangedWariumAttackGoal<T extends AbstractRecruitEntity> exte
         if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !((IBulletConsumer)recruit).recruits_warium$hasAmmo())
             return false;
 
+        if(!this.recruit.getShouldRanged())
+            return false;
+
         if(((IBulletConsumer)recruit).isFleeing())
             return false;
 

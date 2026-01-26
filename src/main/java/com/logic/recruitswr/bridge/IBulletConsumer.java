@@ -20,4 +20,8 @@ public interface IBulletConsumer {
     Boolean isFleeing();
 
     void setIsFleeing(boolean isProne);
+
+    void setWeaponSwitchCooldown(int weaponSwitchCooldown);
+
+    int getWeaponSwitchCooldown();
 }

@@ -60,6 +60,10 @@ public class ArmorPeelerLauncherWeapon extends WariumWeapon {
         return true;
     }
 
+    public boolean isExplosive() {
+        return true;
+    }
+
     @Override
     public int getAttackCooldown() {
         return RecruitsWariumConfig.MAX_ARMOR_PEELER_COOLDOWN.get();

@@ -52,10 +52,8 @@ public abstract class MixinBowmanEntity extends AbstractRecruitEntity implements
         this.setCustomName(Component.literal("Bowman"));
         this.setCost((Integer) RecruitsServerConfig.BowmanCost.get());
         this.setEquipment();
-        this.setDropEquipment();
         this.setRandomSpawnBonus();
         this.setPersistenceRequired();
-        this.setGroup(2);
         if ((Boolean)RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !RecruitsWariumUtils.isWariumGun(this.getMainHandItem().getItem())) {
             RecruitsPatrolSpawn.setRangedArrows(this);
         }

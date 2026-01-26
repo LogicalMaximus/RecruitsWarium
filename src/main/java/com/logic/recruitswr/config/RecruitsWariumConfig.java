@@ -228,6 +228,14 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Float> MINIMUM_INACCURACY;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> WEAPON_SWITCH_COOLDOWN;
+
+    public static final ForgeConfigSpec.ConfigValue<Integer> GRENADE_FUSE_TIME;
+
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_COMMANDERS_AVOID_ENEMIES;
+
+    public static final ForgeConfigSpec.ConfigValue<Boolean> USE_WEAPON_RANGE_FOR_TARGETING;
+
     static {
         BUILDER.comment("Recruit Warium Server Config").push("Weapon Values");
 
@@ -402,11 +410,22 @@ public class RecruitsWariumConfig {
         MINIMUM_INACCURACY = BUILDER.comment("\n The Minimum Inaccuracy A Recruits Should Have\n\t(takes effect after restart)").define("MinimumRecruitInaccuracy", 0.75F);
 
         BUILDER.pop();
+        BUILDER.comment("Recruits Behaviour").push("Commanders");
+
+        SHOULD_COMMANDERS_AVOID_ENEMIES = BUILDER.comment("\n Whether Commanders Should Avoid Fighting Directly \n\t(takes effect after restart)").define("ShouldCommandersAvoidDirectFire", true);
+
+        BUILDER.pop();
         BUILDER.comment("Recruits Behaviour").push("Misc");
+
+        USE_WEAPON_RANGE_FOR_TARGETING = BUILDER.comment("\nWhether The Range Of The Weapon Should Be Used For The AI Target Radius Instead Of The Default (Set To False If Having Performance Issues)\n\t(takes effect after restart)").define("ShouldUseWeaponRangeForTargeting", true);
 
         SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND = BUILDER.comment("\nWhether Grenades Should Stay On The Ground Before Exploding Instead Of Despawning \n\t(takes effect after restart)").define("GrenadeStayOnGround", true);
 
         SHOULD_MERCENARIES_SPAWN = BUILDER.comment("\nWhether Aggressive Mercenaries Should Spawn \n\t(takes effect after restart)").define("ShouldMercenariesSpawn", false);
+
+        WEAPON_SWITCH_COOLDOWN = BUILDER.comment("\nThe Weapon Switch Cooldown On Recruits In Ticks\n\t(takes effect after restart)").define("WeaponSwitchCooldown", 100);
+
+        GRENADE_FUSE_TIME = BUILDER.comment("\nHow Long In Ticks Should A Grenade Stay In The Ground In Ticks\n\t(takes effect after restart)").define("GrenadeFuseTime", 70);
 
         SPEC = BUILDER.build();
     }

@@ -71,7 +71,9 @@ public class RecruitsFindCoverFromTargetGoal<T extends AbstractRecruitEntity> ex
 
                         if(owner instanceof LivingEntity lvOwner) {
                             if(this.mob.getTarget() == null) {
-                                this.mob.setTarget(lvOwner);
+                                if(this.mob.canAttack(lvOwner)) {
+                                    this.mob.setTarget(lvOwner);
+                                }
                             }
 
                             this.attacker = lvOwner;

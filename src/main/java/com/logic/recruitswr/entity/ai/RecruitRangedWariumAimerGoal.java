@@ -30,6 +30,9 @@ public class RecruitRangedWariumAimerGoal<T extends AbstractRecruitEntity> exten
 
     @Override
     public boolean canUse() {
+        if(!this.recruit.getShouldRanged())
+            return false;
+
         LivingEntity livingentity = this.recruit.getTarget();
 
         if (livingentity != null && livingentity.isAlive() && this.isHoldingAimer(this.recruit)) {

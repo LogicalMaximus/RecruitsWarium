@@ -41,6 +41,9 @@ public class RecruitWariumStrategicFire extends Goal {
         if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !((IBulletConsumer)bowman).recruits_warium$hasAmmo())
             return false;
 
+        if(!this.bowman.getShouldRanged())
+            return false;
+
         if(((IBulletConsumer)bowman).isFleeing())
             return false;
 

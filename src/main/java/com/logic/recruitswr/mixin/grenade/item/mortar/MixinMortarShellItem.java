@@ -17,7 +17,7 @@ public abstract class MixinMortarShellItem extends Item implements IAmmo {
 
     @Override
     public EntityType<? extends AbstractArrow> getProjecile() {
-        return CrustyChunksModEntities.SMOKE_MORTAR_PROJECTILE.get();
+        return CrustyChunksModEntities.MORTAR_PROJECTILE.get();
     }
 
     @Override

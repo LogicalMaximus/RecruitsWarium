@@ -1,5 +1,6 @@
 package com.logic.recruitswr.entity.ai;
 
+import com.logic.recruitswr.bridge.IBulletConsumer;
 import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
@@ -10,6 +11,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecruitWeaponSwitch<T extends AbstractRecruitEntity> extends Goal {
     private final T recruit;
@@ -27,9 +35,11 @@ public class RecruitWeaponSwitch<T extends AbstractRecruitEntity> extends Goal {
         if(!RecruitsWariumConfig.SHOULD_RECRUITS_WEAPON_SWITCH.get())
             return false;
 
+        if(((IBulletConsumer)this.recruit).getWeaponSwitchCooldown() > 0)
+            return false;
+
         WariumWeapon weapon = WariumWeapons.getWeaponFromItem(this.recruit.getMainHandItem().getItem());
         LivingEntity target = this.recruit.getTarget();
-
 
         if(!RecruitsWariumUtils.isWariumGun(this.recruit.getMainHandItem().getItem())) {
             this.gunSlot = this.findGunItem();
@@ -42,10 +52,10 @@ public class RecruitWeaponSwitch<T extends AbstractRecruitEntity> extends Goal {
                 }
             }
         } else if(weapon != null) {
-            if(target != null) {
+            if(target != null && !target.isDeadOrDying()) {
                 float distance = this.recruit.distanceTo(target);
 
-                if(target.getVehicle() != null) {
+                if(target.getVehicle() != null || this.isEnemiesClusteredNearTarget(target, 6, 4)) {
 
                     if(!weapon.isAntiVehicle()) {
                         this.gunSlot = this.findATGunItemWithAmmo();
@@ -56,7 +66,7 @@ public class RecruitWeaponSwitch<T extends AbstractRecruitEntity> extends Goal {
                             return true;
                         }
                     }
-                } else if(!this.recruit.hasLineOfSight(target)) {
+                } else if(!this.recruit.hasLineOfSight(target) || this.isEnemiesClusteredNearTarget(target, 5, 3)) {
 
                     if(!weapon.isIndirectFire()) {
                         this.gunSlot = this.findIndirectFireGunItemWithAmmo();
@@ -86,6 +96,15 @@ public class RecruitWeaponSwitch<T extends AbstractRecruitEntity> extends Goal {
                     }
                 }
 
+            } else if(weapon.isSecondary()) {
+
+                this.gunSlot = this.findPrimaryGunItemWithAmmo();
+
+                if(gunSlot != -1) {
+                    itemStack = this.recruit.inventory.getItem(gunSlot);
+
+                    return true;
+                }
             }
 
         } else if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get()) {
@@ -129,6 +148,8 @@ public class RecruitWeaponSwitch<T extends AbstractRecruitEntity> extends Goal {
 
             this.recruit.getInventory().setItem(5, itemStack);
             this.recruit.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
+
+            ((IBulletConsumer)this.recruit).setWeaponSwitchCooldown(RecruitsWariumConfig.WEAPON_SWITCH_COOLDOWN.get());
         }
 
         super.start();
@@ -227,4 +248,56 @@ public class RecruitWeaponSwitch<T extends AbstractRecruitEntity> extends Goal {
         return -1;
     }
 
+    /*
+    private boolean shouldUseExplosive(AbstractRecruitEntity recruit, LivingEntity target, boolean isGrenadeLauncher) {
+        double distance = recruit.distanceTo(target);
+        boolean canSee = !recruit.hasLineOfSight(target) && !this.isLineOfFireBlocked(target.getEyePosition());
+
+        boolean isVehicle = target.getVehicle() != null;
+        boolean isBehindCover = !canSee;
+        boolean isClustered = isEnemyClusteredNear(target, 5.0, 3);
+        boolean isTooClose = distance < 12.0;
+
+        boolean shouldUse = false;
+
+        if (isVehicle) shouldUse = true;
+        else if (isClustered) shouldUse = true;
+        else if (isBehindCover && distance < 12 && isGrenadeLauncher) shouldUse = true;
+
+        if (isTooClose) shouldUse = false;
+
+        return shouldUse;
+    }
+
+
+     */
+    private boolean isEnemiesClusteredNearTarget(LivingEntity target, double radius, int minimumTargets) {
+        List<LivingEntity> entities = this.recruit.level().getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(radius));
+
+        for(LivingEntity entity: entities) {
+            if(!this.recruit.shouldAttack(entity)) {
+                return false;
+            }
+        }
+
+        List<LivingEntity> targets = new ArrayList<>(entities.stream().filter((e) -> recruit.canAttack(e) && recruit.shouldAttack(e)).toList());
+
+        return targets.size() >= minimumTargets;
+    }
+
+    private boolean isLineOfFireBlocked(Vec3 targetPos) {
+        Vec3 eye = this.recruit.getEyePosition();
+        Level level = this.recruit.level();
+
+        ClipContext context = new ClipContext(eye, targetPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.recruit);
+        HitResult result = level.clip(context);
+
+        if (result.getType() == HitResult.Type.BLOCK) {
+            double hitDist = result.getLocation().distanceTo(eye);
+            double totalDist = targetPos.distanceTo(eye);
+            return hitDist < totalDist * 0.2;
+        }
+
+        return false;
+    }
 }

@@ -49,6 +49,9 @@ public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends
         if(RecruitsServerConfig.RangedRecruitsNeedArrowsToShoot.get() && !((IBulletConsumer)recruit).recruits_warium$hasAmmo())
             return false;
 
+        if(!this.recruit.getShouldRanged())
+            return false;
+
         if(((IBulletConsumer)recruit).isFleeing())
             return  false;
 
@@ -76,7 +79,7 @@ public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends
                 this.weapon = WariumWeapons.getWeaponFromItem(this.recruit.getMainHandItem().getItem());
 
                 if(this.weapon != null) {
-                    if(!this.weapon.isGun())return false;
+                    if(!this.weapon.isGun() || this.weapon.isExplosive())return false;
 
                     return (double)distance >= this.stopRange && canTackMovePos && notNeedsToGetFood && canAttack && notPassive && shouldRanged;
                 } else {
@@ -252,7 +255,7 @@ public class RecruitRangedSuppressGoal <T extends AbstractRecruitEntity> extends
         if (result.getType() == HitResult.Type.BLOCK) {
             double hitDist = result.getLocation().distanceTo(eye);
             double totalDist = targetPos.distanceTo(eye);
-            return hitDist < totalDist * 0.2;
+            return hitDist < totalDist * 0.5;
         }
 
         return false;

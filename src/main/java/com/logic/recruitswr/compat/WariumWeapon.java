@@ -385,4 +385,7 @@ public abstract class WariumWeapon implements IWeapon {
         return 0;
     }
 
+    public boolean isExplosive() {
+        return false;
+    }
 }
