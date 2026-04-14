@@ -4,7 +4,7 @@ import com.logic.recruitswr.compat.WariumWeapon;
 import com.logic.recruitswr.compat.WariumWeapons;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.Main;
-import com.talhanation.recruits.compat.IWeapon;
+import com.talhanation.recruits.compat.musketmod.IWeapon;
 import com.talhanation.recruits.config.RecruitsServerConfig;
 import com.talhanation.recruits.entities.*;
 import com.talhanation.recruits.world.RecruitsPatrolSpawn;

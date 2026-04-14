@@ -31,7 +31,7 @@ public abstract class MixinGrenadeProjectile extends AbstractArrow implements It
     @Overwrite(remap = false)
     public void tick() {
         super.tick();
-        GrenadeProjectileWhileProjectileFlyingTickProcedure.execute(this.level(), this.getX(), this.getY(), this.getZ());
+        GrenadeProjectileWhileProjectileFlyingTickProcedure.execute(this.level(), this.getX(), this.getY(), this.getZ(), this);
 
         if(!RecruitsWariumConfig.SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND.get()) {
             if (this.inGround) {
@@ -48,7 +48,6 @@ public abstract class MixinGrenadeProjectile extends AbstractArrow implements It
         }
     }
 
-    @Overwrite
     public void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
 

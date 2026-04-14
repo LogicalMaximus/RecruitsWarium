@@ -11,7 +11,7 @@ import com.logic.recruitswr.entity.ai.*;
 import com.logic.recruitswr.utils.RecruitsWariumSpawnUtils;
 import com.logic.recruitswr.utils.RecruitsWariumUtils;
 import com.talhanation.recruits.Main;
-import com.talhanation.recruits.compat.IWeapon;
+import com.talhanation.recruits.compat.musketmod.IWeapon;
 import com.talhanation.recruits.entities.*;
 import com.talhanation.recruits.entities.ai.async.AsyncManager;
 import com.talhanation.recruits.entities.ai.async.AsyncTaskWithCallback;

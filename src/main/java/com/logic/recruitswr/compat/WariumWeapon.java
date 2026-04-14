@@ -2,7 +2,7 @@ package com.logic.recruitswr.compat;
 
 import com.logic.recruitswr.bridge.IAmmo;
 import com.logic.recruitswr.config.RecruitsWariumConfig;
-import com.talhanation.recruits.compat.IWeapon;
+import com.talhanation.recruits.compat.musketmod.IWeapon;
 import com.talhanation.recruits.config.RecruitsServerConfig;
 import com.talhanation.recruits.entities.AbstractRecruitEntity;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class WariumWeapon implements IWeapon {
+public abstract class WariumWeapon  implements IWeapon {
     private final Item weapon;
 
     protected final ArrayList<Item> ammo = new ArrayList<>();

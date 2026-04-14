@@ -14,7 +14,7 @@ public enum AmmoTypes {
         VERY_LARGE(List.of(CrustyChunksModItems.SMALL_SHELL.get())),
         EXTRA_LARGE(List.of(CrustyChunksModItems.EXTRA_LARGE_BULLET.get())),
         FLAME(List.of(CrustyChunksModItems.PETROLIUM_BUCKET.get())),
-        GRENADE(List.of(CrustyChunksModItems.MORTAR_SHELL.get(), CrustyChunksModItems.SMOKE_MORTAR_SHELL.get()))
+        GRENADE(List.of(CrustyChunksModItems.GRENADE_SHELL.get(), CrustyChunksModItems.SMOKE_GRENADE_SHELL.get()))
     ;
 
     private final List<Item> ammo;

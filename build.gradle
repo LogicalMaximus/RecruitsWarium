@@ -134,8 +134,7 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation fg.deobf("blank:warium-1.20.1:1.2.6")
-    implementation fg.deobf("blank:wariumvs-1.20.1:0.1.0")
+    implementation fg.deobf("blank:warium-1.20.1:1.2.7")
 
     implementation fg.deobf("curse.maven:geckolib-388172:6622543")
 
@@ -150,7 +149,7 @@ dependencies {
 
     runtimeOnly fg.deobf("curse.maven:farsighted-mobs-forge-506624:4660875")
 
-    implementation fg.deobf("curse.maven:recruits-523860:7451837")
+    implementation fg.deobf("curse.maven:recruits-523860:7906232")
 
     runtimeOnly fg.deobf("curse.maven:valkyrien-skies-258371:7178865")
     runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:5402061")

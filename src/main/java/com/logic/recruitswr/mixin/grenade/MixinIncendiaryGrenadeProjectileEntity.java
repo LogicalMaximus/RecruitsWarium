@@ -31,7 +31,7 @@ public abstract class MixinIncendiaryGrenadeProjectileEntity extends AbstractArr
     @Overwrite(remap = false)
     public void tick() {
         super.tick();
-        GrenadeProjectileWhileProjectileFlyingTickProcedure.execute(this.level(), this.getX(), this.getY(), this.getZ());
+        GrenadeProjectileWhileProjectileFlyingTickProcedure.execute(this.level(), this.getX(), this.getY(), this.getZ(), this);
 
         if(!RecruitsWariumConfig.SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND.get()) {
             if (this.inGround) {
@@ -42,7 +42,7 @@ public abstract class MixinIncendiaryGrenadeProjectileEntity extends AbstractArr
         if(this.inGroundTime >= RecruitsWariumConfig.GRENADE_FUSE_TIME.get()) {
             BlockPos blockPos = this.blockPosition();
 
-            IncendiaryGrenadeHitProcedure.execute(this.level(), (double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), this);
+            IncendiaryGrenadeHitProcedure.execute(this.level(), this);
 
             this.discard();
         }
@@ -53,12 +53,11 @@ public abstract class MixinIncendiaryGrenadeProjectileEntity extends AbstractArr
         return CrustyChunksModEntities.INCENDIARY_GRENADE_PROJECTILE.get();
     }
 
-    @Overwrite
     public void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
 
         if(!RecruitsWariumConfig.SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND.get()) {
-            IncendiaryGrenadeHitProcedure.execute(this.level(), (double)blockHitResult.getBlockPos().getX(), (double)blockHitResult.getBlockPos().getY(), (double)blockHitResult.getBlockPos().getZ(), this);
+            IncendiaryGrenadeHitProcedure.execute(this.level(), this);
         }
 
     }
