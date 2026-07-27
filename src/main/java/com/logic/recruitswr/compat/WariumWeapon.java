@@ -254,9 +254,7 @@ public abstract class WariumWeapon  implements IWeapon {
 
                 this.shootProjectiles(null, recruit, entityType, true);
             } else {
-                item = this.getAmmo().get(0);
-
-                this.shootProjectiles(null, recruit, ((IAmmo)item).getProjecile(), false);
+                this.getAmmo().stream().findFirst().ifPresent((e) -> this.shootProjectiles(null, recruit, ((IAmmo)e).getProjecile(), false));
             }
         }
     }

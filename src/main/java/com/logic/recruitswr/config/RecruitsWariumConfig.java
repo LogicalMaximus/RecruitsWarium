@@ -148,6 +148,14 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Double> BREECH_RIFLE_INACCURACY;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_MUSKET_RIFLE_AMMO;
+
+    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_MUSKET_RIFLE_COOLDOWN;
+
+    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_MUSKET_RIFLE_RELOAD;
+
+    public static final ForgeConfigSpec.ConfigValue<Double> MUSKET_RIFLE_INACCURACY;
+
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_ARMOR_PEELER_AMMO;
 
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_ARMOR_PEELER_COOLDOWN;
@@ -230,7 +238,11 @@ public class RecruitsWariumConfig {
 
     public static final ForgeConfigSpec.ConfigValue<Integer> WEAPON_SWITCH_COOLDOWN;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> TARGET_WEAPON_AMMO;
+
     public static final ForgeConfigSpec.ConfigValue<Integer> GRENADE_FUSE_TIME;
+
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_RECRUIT_PRONE;
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOULD_COMMANDERS_AVOID_ENEMIES;
 
@@ -326,6 +338,11 @@ public class RecruitsWariumConfig {
         MAX_BREECH_RIFLE_RELOAD = BUILDER.comment("\nThe Reload Time For The Breech Rifle With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxBreechRifleReload", 90);
         BREECH_RIFLE_INACCURACY = BUILDER.comment("\nThe Base Inaccuracy For The Breech Rifle For The Recruits In Radians\n\t(takes effect after restart)").define("BreechRifleInaccuracy", 0.5);
 
+        MAX_MUSKET_RIFLE_AMMO = BUILDER.comment("\nThe Amount Of Ammo For The Musket With The Recruits \n\t(takes effect after restart)").define("MaxMusketAmmo", 1);
+        MAX_MUSKET_RIFLE_COOLDOWN = BUILDER.comment("\nThe Cooldown For The Musket With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxMusketCooldown", 10);
+        MAX_MUSKET_RIFLE_RELOAD = BUILDER.comment("\nThe Reload Time For The Musket With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxMusketReload", 90);
+        MUSKET_RIFLE_INACCURACY = BUILDER.comment("\nThe Base Inaccuracy For The Musket For The Recruits In Radians\n\t(takes effect after restart)").define("MusketInaccuracy", 1.5);
+
         MAX_ARMOR_PEELER_AMMO = BUILDER.comment("\nThe Amount Of Ammo For The Armor Peeler Launcher With The Recruits \n\t(takes effect after restart)").define("MaxArmorPeelerAmmo", 1);
         MAX_ARMOR_PEELER_COOLDOWN = BUILDER.comment("\nThe Cooldown For The Armor Peeler Launcher With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxArmorPeelerCooldown", 10);
         MAX_ARMOR_PEELER_RELOAD = BUILDER.comment("\nThe Reload Time For The Armor Peeler Launcher With The Recruits In Ticks \n\t(takes effect after restart)").define("MaxArmorPeelerReload", 120);
@@ -343,6 +360,8 @@ public class RecruitsWariumConfig {
 
         BUILDER.pop();
         BUILDER.comment("Recruits Behaviour").push("Behaviour");
+
+        TARGET_WEAPON_AMMO = BUILDER.comment("\nThe Target Amount Of Ammo The Recruit Will Attempt To Have \n\t(takes effect after restart)").define("TargetWeaponAmmo", 256);
 
         BULLET_INACCURACY = BUILDER.comment("\nBullet Inaccuracy Added To The Recruit's Bullets So They Don't Have Aimbot \n\t(takes effect after restart)").define("AimInaccuracy", 0.8F);
 
@@ -417,13 +436,15 @@ public class RecruitsWariumConfig {
         BUILDER.pop();
         BUILDER.comment("Recruits Behaviour").push("Misc");
 
-        USE_WEAPON_RANGE_FOR_TARGETING = BUILDER.comment("\nWhether The Range Of The Weapon Should Be Used For The AI Target Radius Instead Of The Default (Set To False If Having Performance Issues)\n\t(takes effect after restart)").define("ShouldUseWeaponRangeForTargeting", true);
+        USE_WEAPON_RANGE_FOR_TARGETING = BUILDER.comment("\nWhether The Range Of The Weapon Should Be Used For The AI Target Radius Instead Of The Default (Set To False If Having Performance Issues)\n\t(takes effect after restart)").define("ShouldUseWeaponRangeForTargeting", false);
 
         SHOULD_RECRUITS_GRENADES_STAY_ON_GROUND = BUILDER.comment("\nWhether Grenades Should Stay On The Ground Before Exploding Instead Of Despawning \n\t(takes effect after restart)").define("GrenadeStayOnGround", true);
 
         SHOULD_MERCENARIES_SPAWN = BUILDER.comment("\nWhether Aggressive Mercenaries Should Spawn \n\t(takes effect after restart)").define("ShouldMercenariesSpawn", false);
 
         WEAPON_SWITCH_COOLDOWN = BUILDER.comment("\nThe Weapon Switch Cooldown On Recruits In Ticks\n\t(takes effect after restart)").define("WeaponSwitchCooldown", 100);
+
+        SHOULD_RECRUIT_PRONE = BUILDER.comment("\n Whether Recruits Should Go Prone \n\t(takes effect after restart)").define("ShouldProneWhilePosing", true);
 
         GRENADE_FUSE_TIME = BUILDER.comment("\nHow Long In Ticks Should A Grenade Stay In The Ground In Ticks\n\t(takes effect after restart)").define("GrenadeFuseTime", 70);
 

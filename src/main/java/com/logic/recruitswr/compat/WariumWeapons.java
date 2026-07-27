@@ -1,11 +1,14 @@
 package com.logic.recruitswr.compat;
 
 import com.logic.recruitswr.compat.weapons.extra_large.BreechRifleWeapon;
+import com.logic.recruitswr.compat.weapons.extra_large.MusketWeapon;
+import com.logic.recruitswr.compat.weapons.extra_large.ScopedBreechRifleWeapon;
 import com.logic.recruitswr.compat.weapons.flame.FlameThrowerWeapon;
 import com.logic.recruitswr.compat.weapons.grenades.GrenadeLauncherWeapon;
 import com.logic.recruitswr.compat.weapons.grenades.GrenadeWeapon;
 import com.logic.recruitswr.compat.weapons.large.BattleRifleWeapon;
 import com.logic.recruitswr.compat.weapons.large.BoltActionRifleWeapon;
+import com.logic.recruitswr.compat.weapons.large.ScopedBoltActionRifleWeapon;
 import com.logic.recruitswr.compat.weapons.medium.*;
 import com.logic.recruitswr.compat.weapons.rocket.ArmorPeelerLauncherWeapon;
 import com.logic.recruitswr.compat.weapons.shell.BreakActionShotgunWeapon;
@@ -60,11 +63,13 @@ public class WariumWeapons {
 
     public static final FlameThrowerWeapon FLAME_THROWER_WEAPON = new FlameThrowerWeapon();
 
-    public static final BoltActionRifleWeapon SCOPE_BOLT_ACTION_RIFLE_WEAPON = new BoltActionRifleWeapon();
+    public static final ScopedBoltActionRifleWeapon SCOPE_BOLT_ACTION_RIFLE_WEAPON = new ScopedBoltActionRifleWeapon();
 
-    public static final BreechRifleWeapon SCOPE_BREECH_RIFLE_WEAPON = new BreechRifleWeapon();
+    public static final ScopedBreechRifleWeapon SCOPE_BREECH_RIFLE_WEAPON = new ScopedBreechRifleWeapon();
 
     public static final GrenadeLauncherWeapon GRENADE_LAUNCHER_WEAPON = new GrenadeLauncherWeapon();
+
+    public static final MusketWeapon MUSKET_WEAPON = new MusketWeapon();
 
     public static WariumWeapon getWeaponFromItem(Item item) {
         return ITEM_TO_WEAPON.get(item);
@@ -90,10 +95,11 @@ public class WariumWeapons {
         ITEM_TO_WEAPON.put(BREECH_RIFLE_WEAPON.getWeapon(), BREECH_RIFLE_WEAPON);
         ITEM_TO_WEAPON.put(ARMOR_PEELER_LAUNCHER_WEAPON.getWeapon(), ARMOR_PEELER_LAUNCHER_WEAPON);
         ITEM_TO_WEAPON.put(FLAME_THROWER_WEAPON.getWeapon(), FLAME_THROWER_WEAPON);
-        ITEM_TO_WEAPON.put(CrustyChunksModItems.SCOPED_BREECH_RIFLE.get(), SCOPE_BREECH_RIFLE_WEAPON);
-        ITEM_TO_WEAPON.put(CrustyChunksModItems.SCOPED_BOLT_ACTION_RIFLE_ANIMATED.get(), SCOPE_BOLT_ACTION_RIFLE_WEAPON);
+        ITEM_TO_WEAPON.put(SCOPE_BREECH_RIFLE_WEAPON.getWeapon(), SCOPE_BREECH_RIFLE_WEAPON);
+        ITEM_TO_WEAPON.put(SCOPE_BOLT_ACTION_RIFLE_WEAPON.getWeapon(), SCOPE_BOLT_ACTION_RIFLE_WEAPON);
         ITEM_TO_WEAPON.put(GRENADE_WEAPON.getWeapon(), GRENADE_WEAPON);
         ITEM_TO_WEAPON.put(GRENADE_LAUNCHER_WEAPON.getWeapon(), GRENADE_LAUNCHER_WEAPON);
+        ITEM_TO_WEAPON.put(MUSKET_WEAPON.getWeapon(), MUSKET_WEAPON);
     }
 
 }

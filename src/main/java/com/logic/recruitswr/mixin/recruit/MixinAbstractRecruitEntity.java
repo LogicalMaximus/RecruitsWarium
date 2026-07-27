@@ -93,39 +93,6 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
      * @reason
      */
     @Overwrite(remap = false)
-    private void searchForTargetsAsync(ServerLevel serverLevel) {
-        float targetRange;
-
-        Item item = this.getMainHandItem().getItem();
-
-        if(RecruitsWariumConfig.USE_WEAPON_RANGE_FOR_TARGETING.get() && RecruitsWariumUtils.isWariumGun(item)) {
-            targetRange = WariumWeapons.getWeaponFromItem(item).attackRadius();
-        } else {
-            targetRange = 40.0F;
-        }
-
-        AABB searchBox = this.getBoundingBox().inflate((double)targetRange);
-        List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox, (entity) -> entity != this);
-        Supplier<List<LivingEntity>> findTargetsTask = () -> {
-            List<LivingEntity> copy = new ArrayList(nearby);
-            copy.removeIf((potTarget) -> !this.targetingConditions.test(this, potTarget));
-            copy.sort(Comparator.comparingDouble((e) -> e.distanceToSqr(this)));
-            return copy.stream().limit(10L).toList();
-        };
-        Consumer<List<LivingEntity>> handleTargets = (targets) -> {
-            if (!targets.isEmpty()) {
-                this.setTarget((LivingEntity)targets.get(this.getRandom().nextInt(targets.size())));
-            }
-
-        };
-        AsyncManager.executor.execute(new AsyncTaskWithCallback(findTargetsTask, handleTargets, serverLevel));
-    }
-
-    /**
-     * @author
-     * @reason
-     */
-    @Overwrite(remap = false)
     private void searchForTargetsSync(ServerLevel serverLevel) {
         float targetRange;
 
@@ -138,14 +105,13 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
         }
 
         AABB searchBox = this.getBoundingBox().inflate((double)targetRange);
-        List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox, (entity) -> entity != this);
-        nearby.removeIf((potTarget) -> !this.targetingConditions.test(this, potTarget));
-        nearby.sort(Comparator.comparingDouble((e) -> e.distanceToSqr(this)));
+        List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(LivingEntity.class, searchBox, (potTarget) -> potTarget != this && this.targetingConditions.test(this, potTarget));
         if (!nearby.isEmpty()) {
-            LivingEntity target = (LivingEntity)nearby.stream().limit(10L).toList().get(this.getRandom().nextInt(Math.min(10, nearby.size())));
+            nearby.sort(Comparator.comparingDouble((e) -> e.distanceToSqr(this)));
+            int pool = Math.min(10, nearby.size());
+            LivingEntity target = (LivingEntity)nearby.get(this.getRandom().nextInt(pool));
             this.setTarget(target);
         }
-
     }
 
     @Overwrite(remap=false)
@@ -209,6 +175,8 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
     public void changePose() {
         if(this.getPose() == Pose.STANDING) {
             this.setPose(Pose.CROUCHING);
+        } else if(this.getPose() == Pose.CROUCHING && RecruitsWariumConfig.SHOULD_RECRUIT_PRONE.get()) {
+            this.setPose(Pose.SWIMMING);
         } else {
             this.setPose(Pose.STANDING);
         }
@@ -256,6 +224,20 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
     public void tick(CallbackInfo ci) {
         poseCooldown--;
         weaponSwitchCooldown--;
+
+        if(this.isAlive() && this.getState() != 3 && (this.tickCount & 2) == 0) {
+            this.searchForTargets();
+        }
+    }
+
+    @Shadow(remap = false)
+    public void searchForTargets() {
+        throw new AssertionError();
+    }
+
+    @Shadow(remap = false)
+    public int getState() {
+        throw new AssertionError();
     }
 
     @Override
@@ -290,8 +272,8 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
                         itemstack.shrink(1);
                     }
 
-                    if (((AbstractRecruitEntity)(Object)this)  instanceof CrossBowmanEntity) {
-                        CrossBowmanEntity crossBowmanEntity = (CrossBowmanEntity)((AbstractRecruitEntity)(Object)this) ;
+                    if (((AbstractRecruitEntity)(Object)this) instanceof CrossBowmanEntity) {
+                        CrossBowmanEntity crossBowmanEntity = (CrossBowmanEntity)((AbstractRecruitEntity)(Object)this);
                         if (Main.isMusketModLoaded && IWeapon.isMusketModWeapon(crossBowmanEntity.getMainHandItem()) && itemstack.getDescriptionId().contains("cartridge")) {
                             if (this.canTakeCartridge()) {
                                 ItemStack equipment = itemstack.copy();
@@ -307,72 +289,26 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
                         this.inventory.addItem(equipment);
                         itemstack.shrink(equipment.getCount());
                     }
-                }
-            }
 
-            Item item = this.getMainHandItem().getItem();
+                    ItemStack mainHandItem = this.getMainHandItem();
 
-            if (RecruitsWariumUtils.isWariumGun(item)) {
-                WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item);
+                    if (RecruitsWariumUtils.isWariumGun(mainHandItem.getItem())) {
+                        WariumWeapon weaponFromItem = WariumWeapons.getWeaponFromItem(mainHandItem.getItem());
 
-                if(weapon.getAmmo().contains(itemstack.getItem())) {
-                    for(int j = 0; j < this.inventory.getContainerSize(); j++) {
-                        if(j <= 5)continue;
+                        if(weaponFromItem.getAmmo().contains(itemstack.getItem())) {
+                            if(this.canTakeAmmoForGun(mainHandItem)) {
+                                for(int j = 5; j < 15; j++) {
+                                    ItemStack itemStack = this.inventory.getItem(j);
 
-                        ItemStack item1 = this.inventory.getItem(j);
-
-                        if(item1 == ItemStack.EMPTY) {
-                            ItemStack equipment = itemstack.copy();
-                            this.inventory.setItem(j, equipment);
-                            itemstack.shrink(equipment.getCount());
-                            break;
-                        }
-                    }
-                }
-
-
-            }
-
-            if(itemstack.getItem() instanceof IGrenade) {
-                if(this.canTakeGrenades()) {
-                    for(int j = 0; j < this.inventory.getContainerSize(); j++) {
-                        if(j <= 5)continue;
-
-                        ItemStack item1 = this.inventory.getItem(j);
-
-                        if(item1 == ItemStack.EMPTY) {
-                            ItemStack equipment = itemstack.copy();
-                            this.inventory.setItem(j, equipment);
-                            itemstack.shrink(equipment.getCount());
-                            break;
-                        }
-                    }
-                }
-            }
-
-            for(int j = 0; j < this.inventory.getContainerSize(); j++) {
-                if(j <= 5)continue;
-
-                ItemStack item1 = this.inventory.getItem(j);
-
-                if(RecruitsWariumUtils.isWariumGun(item1.getItem())) {
-                    WariumWeapon weapon = WariumWeapons.getWeaponFromItem(item1.getItem());
-
-                    if(weapon.getAmmo().contains(itemstack.getItem())) {
-                        for(int k = 0; k < this.inventory.getContainerSize(); k++) {
-                            if(k <= 5)continue;
-
-                            ItemStack item2 = this.inventory.getItem(k);
-
-                            if(item2 == ItemStack.EMPTY) {
-                                ItemStack equipment = itemstack.copy();
-                                this.inventory.setItem(k, equipment);
-                                itemstack.shrink(equipment.getCount());
-                                break;
+                                    if(itemStack.isEmpty()) {
+                                        ItemStack equipment = itemstack.copy();
+                                        this.inventory.setItem(j, equipment);
+                                        itemstack.shrink(equipment.getCount());
+                                        break;
+                                    }
+                                }
                             }
                         }
-
-                        break;
                     }
                 }
             }
@@ -398,6 +334,33 @@ public abstract class MixinAbstractRecruitEntity extends AbstractInventoryEntity
             }
         }
 
+    }
+
+    @Unique
+    private boolean canTakeAmmoForGun(ItemStack gunStack) {
+        int count = getAmmoCount(gunStack);
+
+        return count < RecruitsWariumConfig.TARGET_WEAPON_AMMO.get();
+    }
+
+    private int getAmmoCount(ItemStack gunStack) {
+        int count = 0;
+
+        Item mainhandItem = this.getMainHandItem().getItem();
+
+        if(RecruitsWariumUtils.isWariumGun(mainhandItem)) {
+            WariumWeapon wariumWeapon = WariumWeapons.getWeaponFromItem(mainhandItem);
+            List<Item> ammo = wariumWeapon.getAmmo();
+            for(ItemStack itemStack : this.inventory.items) {
+                Item item = itemStack.getItem();
+
+                if(ammo.contains(item)) {
+                    count += itemStack.getCount();
+                }
+            }
+        }
+
+        return count;
     }
 
     @Shadow(remap = false)

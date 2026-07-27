@@ -6,7 +6,6 @@ import com.logic.recruitswr.config.RecruitsWariumConfig;
 import net.mcreator.crustychunks.CrustyChunksMod;
 import net.mcreator.crustychunks.init.CrustyChunksModItems;
 import net.mcreator.crustychunks.init.CrustyChunksModSounds;
-import net.mcreator.crustychunks.network.WariumSoundEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -19,9 +18,9 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class BreechRifleWeapon extends WariumWeapon {
-    public BreechRifleWeapon() {
-        super(CrustyChunksModItems.BREECH_RIFLE.get());
+public class ScopedBreechRifleWeapon extends WariumWeapon {
+    public ScopedBreechRifleWeapon() {
+        super(CrustyChunksModItems.SCOPED_BREECH_RIFLE.get());
 
         ammo.addAll(AmmoTypes.EXTRA_LARGE.getItems());
     }
